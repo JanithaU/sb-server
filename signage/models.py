@@ -1,0 +1,249 @@
+from datetime import datetime
+from datetime import timedelta
+from signage import db, login_manager
+from flask_login import UserMixin
+import hashlib
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    firstname = db.Column(db.String(20), unique=False, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    posts = db.relationship('Post', backref='author', lazy=True)
+    #company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=True)
+    # Relationship with roles
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
+    # role = db.relationship('Role', backref='users',lazy=True)
+
+    def __repr__(self):
+        return f"User('{self.firstname}','{self.username}','{self.email}','{self.active_status}')"
+
+
+
+
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    
+    # Relationship with permissions (many-to-many)
+    permissions = db.relationship('Permission', secondary='role_permissions', backref='roles')
+
+    # Relationship with users
+    users = db.relationship('User', backref='role', lazy=True)
+
+    def __repr__(self):
+        return f"Role('{self.name}')"
+
+
+class Permission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f"Permission('{self.name}')"    
+
+############## many-to-many relationship wit Role #####################
+role_permissions = db.Table('role_permissions',
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True),
+    db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'), primary_key=True)
+)
+
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"User('{self.title}','{self.date_posted}')"
+
+
+class branchGroup(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    branch_group_name = db.Column(db.String(20), unique=False, nullable=False)
+    description = db.Column(db.Text,default=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    branchs = db.relationship('Branch', backref='group', lazy=True)
+
+    def __repr__(self):
+        return f"branchGroup('{self.branch_group_name}','{self.date_created}','{self.active_status}')"
+
+
+
+
+################ NEWS MANY TO MANY WITH BRANCH ######################
+news_branch = db.Table('news_branch',
+    db.Column('branch_id', db.Integer, db.ForeignKey('branch.id'), primary_key=True),
+    db.Column('news_id', db.Integer, db.ForeignKey('news.id'), primary_key=True)
+)
+
+
+
+
+class Branch(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    branch_group_id = db.Column(db.Integer, db.ForeignKey('branch_group.id'), nullable=False)
+    branch_name = db.Column(db.String(20), unique=False, nullable=False)
+    description = db.Column(db.Text,default=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    nodes = db.relationship('Node', backref='branch', lazy=True)
+
+
+    def __repr__(self):
+        return f"Branch('{self.branch_name}','{self.date_created}','{self.active_status}')"
+
+
+
+class News(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    heading = db.Column(db.String(20), unique=False, nullable=False)
+    body = db.Column(db.Text,default=False, nullable=False)
+    order = db.Column(db.Integer, nullable=True)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    start_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    end_date = db.Column(db.DateTime, nullable=True, default=datetime.utcnow() +  timedelta(days=7))
+    never_expire = db.Column(db.Boolean, default=False, nullable=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    branches = db.relationship('Branch', secondary=news_branch, lazy='subquery',
+        backref=db.backref('news', cascade="all,delete", lazy=True))
+
+    def __repr__(self):
+        return f"News('{self.heading}','{self.body}','{self.active_status}','{self.order}')"
+
+
+# branch1.news.append(N1)
+# db.session.commit()
+# branch1.news -- Get news in branch 1
+
+# N2.branches -- Get branches in news 1
+
+
+#####################################################################
+
+
+
+
+class Node(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    branch_id = db.Column(db.Integer, db.ForeignKey('branch.id'), nullable=False)
+    node_name = db.Column(db.String(20), unique=False, nullable=False)
+    node_password = db.Column(db.String(20), nullable=False)
+    description = db.Column(db.Text,default=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    added_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    playlist_default_id = db.Column(db.Integer, db.ForeignKey('playlist_default.id', ondelete='CASCADE'), nullable=True)
+    nodestatus = db.relationship('NodeStatus', backref='node', cascade = "all,delete", lazy=True)
+
+    def __repr__(self):
+        return f"Node('{self.node_name}','{self.added_date}','{self.active_status}')"
+
+
+#####################################################################
+
+class Playlist(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    playlist_name = db.Column(db.String(20), unique=False, nullable=False)
+    playlist_type = db.Column(db.String(20), nullable=False, default="FullAd")
+    playlist_duration = db.Column(db.String(20), default='00:00:00')
+    description = db.Column(db.Text,default=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    added_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    playlistmedias = db.relationship('PlaylistMedia', backref='playlist', lazy=True, passive_deletes=True)
+    total_duration = db.Column(db.String(20), nullable=True)
+    total_size = db.Column(db.Float, nullable=True)
+    total_items = db.Column(db.Integer, nullable=True)
+    playlistdefault = db.relationship('PlaylistDefault', backref='playlist', lazy=True, passive_deletes=True)
+    playlistadhoc = db.relationship('PlaylistAddhoc', backref='playlist', lazy=True, passive_deletes=True)
+
+
+class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    company_name = db.Column(db.String(60), unique=False, nullable=True)
+    download_stop = db.Column(db.String(20), unique=False, nullable=False, default="23:00:00")
+    download_start = db.Column(db.String(20), unique=False, nullable=False, default="02:00:00")
+    image_duration = db.Column(db.Integer, nullable=False, default=15)
+    file_size_limit = db.Column(db.Integer, nullable=False, default=1024)
+    version = db.Column(db.Float, nullable=False, default=1.08)
+    #company_id = db.Column(db.Integer, db.ForeignKey('company.id'), unique=True,nullable=True)
+    time_zone = db.Column(db.String(20), nullable=True, default= "Etc/GMT")
+    file_size_limit_total = db.Column(db.Integer, nullable=False, default=2048)
+
+
+
+class Media(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    media_name = db.Column(db.String(60), unique=False, nullable=False)
+    media_thumb_name = db.Column(db.String(200), unique=False, nullable=False)
+    media_type = db.Column(db.String(20))
+    media_duration = db.Column(db.String(20))
+    media_file_size = db.Column(db.String(10))
+    description = db.Column(db.Text,default=False)
+    active_status = db.Column(db.Boolean, default=False, nullable=False)
+    added_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    playlistmedias = db.relationship('PlaylistMedia', backref='media', cascade = "all,delete", lazy=True)
+
+
+class PlaylistMedia(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    media_id = db.Column(db.Integer, db.ForeignKey('media.id'), nullable=False)
+    playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id'), nullable=False)
+    order = db.Column(db.Integer, nullable=True)
+    duration = db.Column(db.String(20))
+    
+    def __repr__(self):
+        return f"Playlist Media('{self.media.media_name}','{self.playlist.playlist_name}','{self.order}')"
+
+
+class PlaylistDefault(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id', ondelete='CASCADE'), nullable=False)
+    nodes = db.relationship('Node', backref='playlistdefault', lazy=True, passive_deletes=True)
+
+
+################ NEWS MANY TO MANY WITH BRANCH ######################
+adhoc_node = db.Table('adhoc_node',
+    db.Column('playlist_addhoc_id', db.Integer, db.ForeignKey('playlist_addhoc.id'), primary_key=True),
+    db.Column('node_id', db.Integer, db.ForeignKey('node.id'), primary_key=True)
+)
+
+
+
+class PlaylistAddhoc(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    addhoc_name = db.Column(db.String(20), unique=False, nullable=False)
+    playlist_id = db.Column(db.Integer, db.ForeignKey('playlist.id', ondelete='CASCADE'), nullable=False)
+    nodes = db.relationship('Node', secondary=adhoc_node, lazy='subquery',
+        backref=db.backref('adhoc', cascade="all,delete", lazy=True))
+    start_date = db.Column(db.DateTime, unique=False, nullable=False)
+    end_date = db.Column(db.DateTime, unique=False, nullable=False)
+    start_time = db.Column(db.String(20), unique=False, nullable=False)
+    end_time = db.Column(db.String(20), unique=False, nullable=False)
+    description = db.Column(db.Text,default=False)
+    added_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+class NodeStatus(db.Model):
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=True)
+    node_id = db.Column(db.Integer, db.ForeignKey('node.id'), nullable=False)
+    advances = db.Column(db.Boolean, default=0, nullable=False)
+    application_restart = db.Column(db.Boolean, default=0, nullable=False)
+    background_downloading = db.Column(db.Boolean, default=0, nullable=False)
+    currency = db.Column(db.Boolean, default=0, nullable=False)
+    delete_all_data = db.Column(db.Boolean, default=0, nullable=False)
+    device_restart = db.Column(db.Boolean, default=0, nullable=False)
+    news = db.Column(db.Boolean, default=0, nullable=False)
+    product = db.Column(db.Boolean, default=0, nullable=False)
+    last_online = db.Column(db.DateTime, nullable=True )

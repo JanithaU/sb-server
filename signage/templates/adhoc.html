@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Ad Hoc Schedule
+<div class="float-right"><a class="btn btn-info btn-sm" href="{{ url_for('publishMediaAdhoc') }}" role="button">Publish</a> &nbsp;<a class="btn btn-info btn-sm" href="{{ url_for('adhocschedule_add')}}" role="button">+ Add Schedule</a></div></h2> 
+
+<hr>
+
+{% if adhoc %}
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Start Date</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Start Time</th>
+      <th scope="col">End Time</th>
+      <th scope="col">Added Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in adhoc %}
+            <tr>
+              <td>{{ br.addhoc_name }}</td>
+              <td>{{ br.start_date.strftime('%d/%m/%Y ') }}</td>
+              <td>{{ br.end_date.strftime('%d/%m/%Y ') }}</td>
+              <td>{{ br.start_time }}</td>
+              <td>{{ br.end_time }}</td>
+              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+
+              <td><a href="{{ url_for('adhocschedule_view', schedule_id=br.id) }}" class="badge badge-info">View</a>&nbsp;
+                    <form action="{{ url_for('deleteAdhocSchedule', schedule_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Ad-hoc Schedule {{ br.addhoc_name }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form>
+              </td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Ad-hoc schedules to the system</p>
+</div>
+{% endif %}
+
+
+<script type="text/javascript">
+  function ConfirmDelete()
+{
+  var x = confirm("Are you sure you want to delete?");
+  if (x)
+      return true;
+  else
+    return false;
+}
+
+</script>
+
+
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Template<a class="btn btn-info btn-sm float-right" href="{{ url_for('template_Add')}}" role="button">+ Add Template</a></h2> 
+<hr>
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in template_list %}
+            <tr>
+              <td>{{ br.name }}</td>
+              <td>
+              	{% if br.status == '1' %}
+                <p> active </p>
+
+              	{% else%}
+                
+              	<p> Deactive </p>
+              	{% endif %}
+              </td>
+              <td>{{ br.date }}</td>
+              <td><a href="#" class="badge badge-info">Preview</a>&nbsp;<a href="#" class="badge badge-secondary">Edit</a>&nbsp;<a href="{{ url_for('templates_items')}}" class="badge badge-light">+ template items</a>&nbsp;<a href="#" class="badge badge-danger">Delete</a></td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}

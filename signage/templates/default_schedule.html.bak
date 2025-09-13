@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Default Playlist</h2>
+<hr>
+
+<div id="c3-default-wrapper">
+    <div class="c3-col1">
+            <div class="title">
+                Node Hireachy
+            </div>
+                                <div class="tree-box">
+                                    <ul class="treeview" style="margin: 10px 0px 0px -11px !important">
+                                            {% for group in groups %}
+                                            <li>
+
+                                                <input type="checkbox" name="{{ group.branch_group_name }}" id="{{ group.branch_group_name }}" value="{{ group.id }}">
+                                                <label for="tall" class="custom-unchecked">{{ group.branch_group_name }}</label>
+                                                <ul>
+
+                                                    {% for bran in group.branchs %}
+                                                        {% if bran.active_status %}
+
+                                                                <li>
+                                                                 <input type="checkbox" name="{{ bran.branch_name }}" id="{{ group.branch_group_name }}" value="{{ bran.id }}">
+                                                                 <label for="tall-1" class="custom-unchecked"> {{ bran.branch_name }}</label>  
+                                                         
+
+                                                            <ul>
+                                                                {% for node in bran.nodes %}
+                                                                    {% if node.active_status %}
+                                                                        <li>
+                                                                         <input type="checkbox" name="node" id="{{ node.node_name }}" value="{{ node.id }}">
+                                                                         <label for="tall-1" class="custom-unchecked"> {{ node.node_name }}</label>  
+                                                                        </li>
+
+                                                                    {% endif %}
+
+                                                                {% endfor %}
+                                                             
+                                                           </ul>
+                                                        {% endif %}
+
+                                                </li>                           
+
+                                                    {% endfor %}
+
+                                                    </ul>
+                                            </li>  
+                                            {% endfor %}
+                                        </ul>
+
+                                </div>
+        </div>
+
+
+
+
+
+
+
+    <div class="c3-col2">
+        <div class="title">
+            Available Template
+        </div>
+                                    
+                                    <h4><span class="badge badge-info">Full Add</span></h4>
+                                    </br>
+                                    <div class="grid-box" >
+                                           <table class="table table-hover table-bordered">
+                                                <thead>
+                                                  <tr>
+                                                    <th scope="col">Media</th>
+                                                    <th scope="col">Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                       {% for br in playlists %}
+                                                          <tr>
+                                                            <td> 
+                                                                <span> {{br.playlist_name}}</span></br>
+
+                                                                <span class="badge badge-secondary"> {{br.total_duration}}</span>
+                                                                <span class="badge badge-secondary"> {{br.total_size}} MB</span>
+                                                            </td>
+                                                            <td><a href="" class="badge badge-light" onclick="ajaxfunction({{br.id}})"> + Add</a></td>
+                                                          </tr>
+                                                          {% endfor %}
+                                                </tbody>
+                                              </table>                   
+                                     </div>
+    </div>
+
+
+
+
+    <div class="c3-col3">
+        <div class="title">
+            Node Default Playlist(s)
+        </div>
+
+                                <div class="grid-box" >
+                                           <table class="table table-hover table-bordered">
+                                                <thead>
+                                                  <tr>
+                                                    <th scope="col">Group</th>
+                                                    <th scope="col">Branch</th>
+                                                    <th scope="col">Node</th>
+                                                    <th scope="col">Playlist</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                       {% for br in nodes %}
+                                                          <tr>
+                                                            <td> {{br.branch.group.branch_group_name}}
+                                                            </td>
+                                                            <td> {{br.branch.branch_name}}
+                                                            </td>
+                                                            <td> {{br.node_name}}
+                                                            </td>
+                                                            <td>  
+                                                                {% if br.playlistdefault %}
+                                                                {{br.playlistdefault.playlist.playlist_name}}
+                                                                {% endif %}
+                                                            </td>
+                                                          </tr>
+                                                          {% endfor %}
+                                                </tbody>
+                                              </table> 
+                                </div>
+    </div>
+
+</div>
+
+
+  <script src="{{ url_for('static', filename='js/jquery-1.6.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<script type="text/javascript">
+    function ajaxfunction(val){
+        console.log(val)
+            var favorite = [];
+            $.each($("input[name='node']:checked"), function(){            
+                favorite.push($(this).val());
+            });
+//            alert("My favourite sports are: " + favorite.join(", "));
+
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('defaultSchedule') }}",
+                data: {
+                    nodes: favorite.join(", "),
+                    playlist_id: val
+                },
+                success: function(data) {
+                    location.reload();
+                }
+            
+            });
+
+
+}
+</script>
+
+
+{% endblock content %}
+

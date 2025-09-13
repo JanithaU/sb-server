@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Branch Group <a class="btn btn-info btn-sm float-right" href="{{ url_for('branch_group_function_Add')}}" role="button">+ Add Group</a></h2> 
+<hr>
+
+{% if branchG %}
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in branchG %}
+            <tr>
+              <td>{{ br.branch_group_name }}</td>
+              <td>
+              	{% if br.active_status == 1 %}
+              	<span class="badge badge-success">Active</span>
+              	{% else %}
+              	<span class="badge badge-dark"> Deactive </span>
+              	{% endif %}
+              </td>
+              <td>{{ br.date_created.strftime('%d/%m/%Y') }}</td>
+              <td><a href="{{ url_for('branchGroupView', branchgroup_id=br.id) }}" class="badge badge-info">View</a>&nbsp;<a href="{{ url_for('updateBranchGroup', branchgroup_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+                    <form action="{{ url_for('deleteBranchGroup', branchgroup_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Group : {{ br.branch_group_name }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form></td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Groups to the system</p>
+</div>
+{% endif %}
+{% endblock content %}

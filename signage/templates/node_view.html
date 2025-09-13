@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Node<div class="float-right"><a class="btn btn-info btn-sm " href="{{ url_for('updateNode', node_id=bGG.id) }}" role="button">Update</a>&nbsp;&nbsp;<a class="btn btn-info btn-sm" href="{{ url_for('node')}}" role="button">Go Back</a></div></h2>
+<hr>
+<div class="col-md-6">
+  <div class ="content-section">
+    <form >
+      <fieldset class="form-group">
+      <legend class="border-bottom mb-4">View Node</legend>
+
+
+   <div class="form-group">
+        <label class="form-control-label">Branch Group Name</label>
+          <select class="custom-select" disabled> 
+            <option >{{bGG.branch.group.branch_group_name }}</option>
+          </select>              
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Branch Name</label>
+        <input class="form-control form-control-lg" value="{{ bGG.branch.branch_name }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Node Name</label>
+        <input class="form-control form-control-lg" value="{{ bGG.node_name }}" disabled>               
+      </div>
+
+
+      <div class="form-group">
+        <label class="form-control-label">Node Password</label>
+        <input class="form-control form-control-lg" type=password id="node_password" name="node_password" value="{{ bGG.node_password }}" disabled>     
+              <span class="input-group-btn float-right">
+                <a class="reveal" type="button-xs" onclick="showPassword()"> <span class="fa fa-eye" id="showpass"></span></a>
+              </span> 
+      </div>
+
+
+
+      <div class="form-group">
+        <label class="form-control-label">Description</label>
+        <input class="form-control form-control-lg" value="{{ bGG.description }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <lable class="form-control-checkbox"> Active </lable>
+         <input class="checkbox-inline" type="checkbox" {% if bGG.active_status %} checked {% else %} unchecked {% endif %} disabled/>       
+      </div>
+
+                                                       
+            </div>
+
+
+      </fieldset>
+    </form>
+          
+
+
+  </div>
+</div>
+
+
+<script type="text/javascript">
+function showPassword(){
+  var x = document.getElementById("node_password");
+  var y = document.getElementById("showpass");
+
+  if (x.type === "password") {
+    x.type = "text";
+    y.className ="fa fa-eye-slash";
+  } else {
+    x.type = "password";
+    y.className ="fa fa-eye";
+  }
+}
+
+</script>
+
+
+{% endblock content %}

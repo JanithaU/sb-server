@@ -1,0 +1,71 @@
+#c3-default-wrapper {
+    width: 100%;
+    min-width: 1280px;
+    float: left;
+    overflow: hidden;
+}
+
+
+#c3-default-wrapper > div.c3-col1 {
+    min-width: 170px;
+    float: left;
+    width: 12.53%;
+}
+
+#c3-default-wrapper > div.c3-col2 {
+    min-width: 230px;
+    float: left;
+    margin-left: .39%;
+    width: 26.81%;
+}
+
+#c3-default-wrapper > div.c3-col3 {
+    min-width: 600px;
+    float: left;
+    margin-left: .39%;
+    width: 46.87%;
+}
+
+
+#c3-default-wrapper > div.c3-col1 > div.title {
+    background-color: #f8f8f8;
+    background-color: #f0f0f0;
+    padding: 5px 2%;
+    font-size: 16px;
+    font-weight: bold;
+    width: 96%;
+}
+
+
+#c3-default-wrapper > div.c3-col2 > .title {
+    float: left;
+    background-color: #f0f0f0;
+    height: auto;
+    width: 97.6%;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 1.2%;
+  /*  min-width: 410px; */
+}
+
+
+#c3-default-wrapper > div.c3-col3 > .title {
+    float: left;
+    background-color: #f0f0f0;
+    height: auto;
+    width: 98.33%;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px .83%;
+    min-width: 410px;
+}
+
+
+#c3-default-wrapper > div.c3-col3 > .grid-box {
+    float: left;
+    width: 98.34%;
+    background-color: #f8f8f8;
+    min-width: 600px;
+    margin-top: 5px;
+    padding: 5px .83%;
+}

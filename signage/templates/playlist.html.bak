@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Playlist<a class="btn btn-info btn-sm float-right" href="{{ url_for('playlist_Add')}}" role="button">+ Add Playlist</a></h2> 
+<hr>
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Type</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in play_list %}
+            <tr>
+              <td>{{ br.playlist_name }}</td>
+              <td>{{ br.playlist_type }}</td>
+              <td>{{ br.total_duration }}</td>
+              <td>
+              	{% if br.active_status == 1 and br.in_a_schedule == '1' and br.in_a_default_schedule == '1' %}
+              	<p>active in S D</p>
+                {% elif br.active_status == 1 and br.in_a_schedule == '1' and br.in_a_default_schedule == '0' %}
+                <p> active S</p>
+                {% elif br.active_status == 1 and br.in_a_schedule == '0' and br.in_a_default_schedule == '1' %}
+                <p> active D</p>
+                {% elif br.active_status == 1 and br.in_a_schedule == '0' and br.in_a_default_schedule == '0' %}
+                <p> active </p>
+
+              	{% elif br.active_status == 1 %}
+                <p> active </p>
+                {% elif br.active_status == 0 %}
+                
+              	<p> Deactive </p>
+              	{% endif %}
+              </td>
+              <td>{{ br.added_date.strftime('%m/%d/%Y') }}</td>
+              <td><a href="#" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updatePlaylist', pl_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<a href="{{ url_for('playlist_items', playlist_id=br.id)}}" class="badge badge-light">+ Media</a>&nbsp;
+
+                <form action="{{ url_for('deletePlaylist', pl_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Playlist : {{ br.playlist_name }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form></td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+
+{% endblock content %}

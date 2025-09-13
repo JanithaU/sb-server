@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!--
+    {% for post in posts %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ post.author }}</a>
+              <small class="text-muted">{{ post.date_posted }}</small>
+            </div>
+            <h2><a class="article-title" href="#">Pay your bill</a></h2>
+            <p class="article-content">you have to pay this month bill</p>
+          </div>
+        </article>
+    {% endfor %}
+-->
+
+    <table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Group</th>
+      <th scope="col">Branch</th>
+      <th scope="col">Node</th>
+      <th scope="col">Last Online</th>
+    </tr>
+  </thead>
+  <tbody>
+          {% for stat in status %}
+            <tr>
+              <td>{{ stat.node.branch.group.branch_group_name }}</td>
+              <td>{{ stat.node.branch.branch_name }}</td>
+              <td>{{ stat.node.node_name }}</td>
+              <td>{{ stat.last_online }}</td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
+
+{% block rightContent %}
+<div class="col-md-4"> <!-- this div tag is important -->
+
+          <div class="content-section">
+            <h3>Upcoming Schedules</h3>
+            {% if ad_hc_schedule %}
+            <p class='text-muted'>Following schedules will be played,
+              <ul class="list-group">
+                {% for up_sc in up_scs %}
+                <li class="list-group-item list-group-item-light">{{ up_sc.schedule}}</li>
+                {% endfor %}
+              </ul>
+            </p>
+            {% else %}
+            <p class='text-muted'> No Schedules</p>
+            {% endif %}
+          </div>
+
+
+          <div class="content-section">
+            <h3>Recent Actions</h3>
+            {% if actions %}
+              <ul class="list-group">
+                {% for ac in actions %}
+                <li class="list-group-item list-group-item-light">Latest Posts</li>
+                <li class="list-group-item list-group-item-light">Announcements</li>
+                <li class="list-group-item list-group-item-light">Calendars</li>
+                <li class="list-group-item list-group-item-light">etc</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+</div>
+{% endblock rightContent %}

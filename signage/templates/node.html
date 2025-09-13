@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Node<a class="btn btn-info btn-sm float-right" href="{{ url_for('node_Add')}}" role="button">+ Add Node</a></h2> 
+<hr>
+
+{% if nodes %}
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Group</th>
+      <th scope="col">Branch</th>
+      <th scope="col">Node</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in nodes %}
+            <tr>
+              <td>{{ br.branch.group.branch_group_name }}</td>
+              <td>{{ br.branch.branch_name }}</td>
+              <td>{{ br.node_name }}</td>
+              <td>
+              	{% if br.active_status == 1 %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-dark"> Deactive </span>
+              	{% endif %}
+              </td>
+              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+              <td><a href="{{ url_for('nodeView', node_id=br.id) }}" class="badge badge-info">View</a>&nbsp;<a href="{{ url_for('updateNode', node_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+                    <form action="{{ url_for('deleteNode', node_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Node : {{ br.node_name }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form></td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Nodes to the system</p>
+</div>
+{% endif %}
+{% endblock content %}

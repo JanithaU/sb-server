@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>News <div class="float-right"><a class="btn btn-info btn-sm " href="{{ url_for('updateNews', news_id=news.id) }}" role="button">Update</a>&nbsp;&nbsp;<a class="btn btn-info btn-sm" href="{{ url_for('news')}}" role="button">Go Back</a></div></h2>
+<hr>
+<div class="col-md-6">
+  <div class ="content-section">
+    <form >
+      <fieldset class="form-group">
+      <legend class="border-bottom mb-4">View News</legend>
+
+   <div class="form-group">
+        {% if not news.branches %}
+          <span class="text-danger"> No Branches </span>
+        {% else %}  
+        <table border="1" width="100%">
+          <tr>
+          <th>Group</th>
+          <th>Branch</th>
+        </tr>
+        {% for bran in news.branches %}
+            <tr>
+              <td>{{bran.group.branch_group_name}}</td>
+              <td>{{bran.branch_name}}</td>
+            </tr>
+        {% endfor %}
+
+        </table>
+        {% endif %}
+      </div>
+
+   <div class="form-group">
+        <label class="form-control-label">Topic</label>
+        <input class="form-control form-control-text" value="{{ news.heading }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Body</label>
+        <input class="form-control form-control-text" value="{{ news.body }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Order Number</label>
+        <input class="form-control form-control-sm" value="{{ news.order }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Start Date</label>
+        <input class="form-control"  value="{{ news.start_date.strftime('%m/%d/%Y')  }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">End Date</label>
+        <input class="form-control"  value="{{ news.end_date.strftime('%m/%d/%Y') }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <lable class="form-control-checkbox"> Never Expire </lable>
+         <input class="checkbox-inline" type="checkbox" {% if news.never_expire %} checked {% else %} unchecked {% endif %} disabled/>       
+      </div>
+
+
+      <div class="form-group">
+        <lable class="form-control-checkbox"> Active </lable>
+         <input class="checkbox-inline" type="checkbox" {% if news.active_status %} checked {% else %} unchecked {% endif %} disabled/>       
+      </div>
+
+
+
+                                                       
+            </div>
+
+
+      </fieldset>
+    </form>
+          
+
+
+  </div>
+</div>
+
+{% endblock content %}

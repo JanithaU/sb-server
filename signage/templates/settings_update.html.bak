@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Settings<a class="btn btn-info btn-sm float-right" href="{{ url_for('settings')}}" role="button">Go Back</a></h2>
+<hr>
+<div class="col-md-6">
+	<div class ="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+			<legend class="border-bottom mb-4">Update Settings</legend>
+
+<!-- To change to branch relation -->
+
+			<div class="form-group">
+				{{ form.download_stop.label(class="form-control-label") }}
+
+				{% if form.download_stop.errors %}
+					{{ form.download_stop(class="form-control form-control-lg is-invalid", type="time", step="2") }}
+
+					<div class="invalid-feedback">
+						{% for error in form.download_stop.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.download_stop(class="form-control form-control-lg", type="time", step="2") }}
+
+				{% endif %}
+				
+			</div>
+
+
+			<div class="form-group">
+				{{ form.download_start.label(class="form-control-label") }}
+
+				{% if form.download_start.errors %}
+					{{ form.download_start(class="form-control form-control-lg is-invalid", type="time", step="2")}}
+					<div class="invalid-feedback">
+						{% for error in form.download_start.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.download_start(class="form-control form-control-lg", type="time", step="2") }}
+				{% endif %}
+				
+			</div>
+
+
+
+			<div class="form-group">
+				{{ form.image_duration.label(class="form-control-label") }}
+
+				{% if form.image_duration.errors %}
+					{{ form.image_duration(class="form-control form-control-lg is-invalid", type="number", min=1, max="60")}}
+					<div class="invalid-feedback">
+						{% for error in form.image_duration.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.image_duration(class="form-control form-control-lg", type="number", min=1, max="60") }}
+				{% endif %}
+				
+			</div>
+
+
+			<div class="form-group">
+				{{ form.file_size_limit.label(class="form-control-label") }}
+
+				{% if form.file_size_limit.errors %}
+					{{ form.file_size_limit(class="form-control form-control-lg is-invalid", type="number", min=1, max="2048")}}
+					<div class="invalid-feedback">
+						{% for error in form.file_size_limit.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.file_size_limit(class="form-control form-control-lg", type="number", min=1, max="2048") }}
+				{% endif %}
+				
+			</div>
+
+
+
+
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}	
+				<a class="btn btn-outline-secondary" href="{{ url_for('settings')}}" role="button">Cancel</a>
+			</div>
+
+			</fieldset>
+		</form>
+					
+
+
+	</div>
+</div>
+
+
+<script type="text/javascript">
+  $(function() {
+    $('#download_stop').datetimepicker({
+      pickDate: false
+    });
+  });
+</script>
+{% endblock content %}

@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Playlist Items <a class="btn btn-info btn-sm float-right" href="{{ url_for('playlist')}}" role="button">Goto Playlist</a></h2> 
+<span class="badge badge-secondary">{{playlist.playlist_name}}</span>
+<span class="badge badge-secondary">{{playlist.playlist_type}}</span>
+<span class="badge badge-secondary">Media Items {{playlist.total_items}}</span>
+<span class="badge badge-secondary">Total Duration {{playlist.total_duration}}</span>
+<span class="badge badge-secondary">Total {{playlist.total_size}} MB</span>
+<hr>
+<!-- change the class to col-md-6 -->
+<div class="row">
+      <div class="col-8 col-sm-6">
+
+
+        {% if media[0] %}
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Media</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Duration</th>
+                    <th scope="col">Action</th>
+                  
+                  </tr>
+                </thead>
+                <tbody>
+                       {% for br in media %}
+                          <tr>
+                            <td> 
+                                {% if br.media_thumb_name == 'default.png' %}
+                                 <img src="{{ url_for('static', filename='images/video_file.png') }}" height="40px" >
+                                {% else %}
+                                  <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media_thumb_name ) }}" height="40px">
+                                {% endif %}
+                            </td>
+                            <td>{{ br.media_name }}</td>
+                            <td>{{ br.media_type }}</td>
+                            <td>{{ br.media_duration }}</td>
+                            <td><a href="{{ url_for('playlist_items_add', playlist_id=playlist.id, media_id=br.id)}}" class="badge badge-light"> + Add</a></td>
+                          </tr>
+                          {% endfor %}
+                </tbody>
+              </table>
+              {% else %}
+                  <div class="alert alert-dark" role="alert">
+                    <h4 class="alert-heading">No records to display !</h4>
+                    <p>Add Media Files to the system</p>
+                  </div>
+              {% endif %}
+      </div>
+
+      {% if val %}
+          <div class="col-4 col-sm-6">
+              <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Order</th>
+                  <th scope="col">Duration</th>
+                  <th scope="col">Action</th>
+                
+                </tr>
+              </thead>
+                <tbody>
+                       {% for br in plmedia %}
+                          <tr>
+                            <td> 
+                                {% if br.media.media_thumb_name == 'default.png' %}
+                                 <img src="{{ url_for('static', filename='images/video_file.png') }}" height="40px" >
+                                {% else %}
+                                  <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media.media_thumb_name ) }}" height="40px">
+                                {% endif %}
+                            </td>
+                            <td>{{ br.media.media_name }}</td>
+                            <td>{{ br.order}}</td>
+                            <td>
+                               <div class="mx-sm-4">
+                                  <input type="text" value="{{ br.duration }}" 
+                                  onchange="ajaxfunction({{br.id}},value)" class="form-control">
+
+                               </div>
+                            </td>
+                            <td>
+
+
+                            <form action="{{ url_for('deletePlaylistItem', playlistmedia_id=br.id, playlist_id=playlist.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Playlist Item : {{ br.media.media_name }} ?')">
+                                    <input class="btn btn-danger btn-xs" type="submit" value="Remove" >
+                                </form>
+
+
+                          </td>
+                          </tr>
+
+                          {% endfor %}
+                </tbody>
+
+
+              </table>
+        </div>
+        {% else %}
+          <p> Add data to the selected playlist </p>
+      {% endif %}
+  </div>
+
+ <script src="{{ url_for('static', filename='js/jq.min.js') }}" ></script>
+
+<!-- <script type="text/javascript">
+    $("#duration").change(function() {
+      console.log($(this).name())
+      console.log($(this))
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{{ url_for('get_branches_for_group') }}",
+    //         data: {
+    //             plmedia_id: $("#branch_group_id").val()
+
+    //         },
+    //         success: function(data) {
+    //             $("#branch_id").html(data);
+    //         }
+    //     });
+     });
+</script> -->
+
+<script type="text/javascript">
+  
+function ajaxfunction(val1, val2){
+  console.log(val1)
+  console.log(val2)
+    $.ajax({
+            type: "POST",
+            url: "{{ url_for('updatePlaylistDuration') }}",
+            data: {
+                plmedia_id: val1,
+                duration: val2,
+                playlist_id:{{playlist.id}}
+
+            },
+            success: function(data) {
+                location.reload();
+            }
+            
+        });
+     };
+
+</script>
+
+{% endblock content %}

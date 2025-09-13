@@ -1,0 +1,204 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>News<a class="btn btn-info btn-sm float-right" href="{{ url_for('news')}}" role="button">Go Back</a></h2>
+<hr>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group ">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+        
+<div class="row">
+      <div class="col-8 col-sm-4 mb-4  border  border-info">
+            <div id="page-wrap float-left">
+            <ul class="treeview">
+                {% for group in groups %}
+                <li>
+
+                    {% if group.id in selected_grp %}
+                        <input type="checkbox" name="{{ group.branch_group_name }}" id="{{ group.branch_group_name }}" value="{{ group.id }}">
+                        <label for="tall" class="custom-checked">{{ group.branch_group_name }}</label>
+                        <ul>
+
+                    {% else %}
+                        <input type="checkbox" name="{{ group.branch_group_name }}" id="{{ group.branch_group_name }}" value="{{ group.id }}">
+                        <label for="tall" class="custom-unchecked">{{ group.branch_group_name }}</label>
+                        <ul>
+                    {% endif %}
+                        {% for bran in group.branchs %}
+                            {% if bran.active_status %}
+
+                                {% if bran.id in selected %} 
+                                                                       
+                                    <li>
+                                     <input type="checkbox" name="{{ bran.branch_name }}" id="{{ bran.branch_name }}" value="{{ bran.id }}">
+                                     <label for="tall-1" class="custom-checked"> {{ bran.branch_name }}</label>  
+                                    </li>
+                                    {% else %}
+
+                                    <li>
+                                     <input type="checkbox" name="{{ bran.branch_name }}" id="{{ group.branch_group_name }}" value="{{ bran.id }}">
+                                     <label for="tall-1" class="custom-unchecked"> {{ bran.branch_name }}</label>  
+                                    </li>
+                                    {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                </li>  
+                {% endfor %}
+            </ul>
+            </div>
+
+     </div>
+
+
+<!-- RIGHT SIDE -->
+    <div class="col-8 col-sm-6 ">
+<!-- To change to branch relation -->
+
+    {% if order %}
+            <div class="form-group">
+                {{ form.order.label(class="form-control-label") }}
+                <span>{{form.order.data}}</span>
+                {% if form.order.errors %}
+                    {{ form.order(class="form-control form-control-lg is-invalid",type="hidden")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.order.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.order(class="form-control form-control-lg", type="hidden", style="width: 12%") }}
+                {% endif %}
+                
+            </div>
+    {% endif %}
+
+            <div class="form-group">
+                {{ form.heading.label(class="form-control-label") }}
+
+                {% if form.heading.errors %}
+                    {{ form.heading(class="form-control form-control-lg is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.heading.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.heading(class="form-control form-control-lg") }}
+                {% endif %}
+                
+            </div>
+
+
+
+            <div class="form-group">
+                {{ form.body.label(class="form-control-text") }}
+                {% if form.body.errors %}
+                    {{ form.body(class="form-control form-control-text is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.body.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.body(class="form-control form-control-text") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.start_date.label(class="form-control-text") }}
+                {% if form.start_date.errors %}
+                    {{ form.start_date(class="form-control form-control-text is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.start_date.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+            <!--        <input type="date" name="start_date" max="3000-12-31" 
+                        min="1000-01-01" class="form-control">
+                -->    {{ form.start_date(class="form-control",type="date") }}
+                {% endif %}
+
+                </div>
+
+
+            <div class="form-group">
+                {{ form.end_date.label(class="form-control-text") }}
+                {% if form.end_date.errors %}
+                    {{ form.end_date(class="form-control form-control-text is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.end_date.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+
+                    {{ form.end_date(class="form-control",type="date") }}
+                    
+                {% endif %}
+
+                </div>
+
+
+            <div class="form-group">
+                {{ form.never_expire.label(class="form-control-checkbox") }}
+
+                {% if form.never_expire.errors %}
+                    {{ form.never_expire(class="form-control checkbox-inline is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.never_expire.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.never_expire(class="checkbox-inline", onchange="myFunction(this)") }}
+                {% endif %}
+                
+            </div>
+
+
+            <div class="form-group">
+                {{ form.active_status.label(class="form-control-checkbox") }}
+
+                {% if form.active_status.errors %}
+                    {{ form.active_status(class="form-control checkbox-inline is-invalid")}}
+                    <div class="invalid-feedback">
+                        {% for error in form.active_status.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.active_status(class="checkbox-inline") }}
+                {% endif %}
+                
+            </div>
+        
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }} 
+                <a class="btn btn-outline-secondary" href="{{ url_for('news')}}" role="button">Cancel</a>
+            </div>
+
+    </div>
+   </div>
+</fieldset>
+
+</form>
+
+  <script src="{{ url_for('static', filename='js/jquery-1.6.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
+ <script>
+function myFunction(checkbox) {
+if(checkbox.checked == true){
+        document.getElementById("end_date").disabled = true;
+    }else{
+        document.getElementById("end_date").disabled = false;
+   }
+
+}
+</script>
+{% endblock content %}
+

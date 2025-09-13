@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Ad Hoc Schedule <div class="float-right"><a class="btn btn-info btn-sm" href="{{ url_for('adhocschedule')}}" role="button">Go Back</a></div></h2>
+<hr>
+<div class="col-md-6">
+  <div class ="content-section">
+    <form >
+      <fieldset class="form-group">
+      <legend class="border-bottom mb-4">View Ad Hoc Schedule</legend>
+
+   <div class="form-group">
+        {% if not adhoc.nodes %}
+          <span class="text-danger"> No Nodes </span>
+        {% else %}  
+        <table border="1" width="100%">
+          <tr>
+          <th>Group</th>
+          <th>Branch</th>
+          <th>Node</th>
+        </tr>
+        {% for bran in adhoc.nodes %}
+            <tr>
+              <td>{{bran.branch.group.branch_group_name}}</td>
+              <td>{{bran.branch.branch_name}}</td>
+              <td>{{bran.node_name}}</td>
+            </tr>
+        {% endfor %}
+
+        </table>
+        {% endif %}
+      </div>
+
+   <div class="form-group">
+        <label class="form-control-label">Schedule Name</label>
+        <input class="form-control form-control-text" value="{{ adhoc.addhoc_name }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Play List</label>
+        <input class="form-control form-control-text" value="{{ adhoc.playlist.playlist_name }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Start Date</label>
+        <input class="form-control form-control-sm" value="{{ adhoc.start_date.strftime('%m/%d/%Y') }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">End Date</label>
+        <input class="form-control"  value="{{ adhoc.end_date.strftime('%m/%d/%Y')  }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Start Time</label>
+        <input class="form-control"  value="{{ adhoc.start_time }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">End Time</label>
+        <input class="form-control"  value="{{ adhoc.start_time }}" disabled>               
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Description</label>
+        <input class="form-control"  value="{{ adhoc.description }}" disabled>               
+      </div>
+
+                                                       
+            </div>
+
+
+      </fieldset>
+    </form>
+          
+
+
+  </div>
+</div>
+
+{% endblock content %}

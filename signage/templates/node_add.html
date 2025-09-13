@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Node<a class="btn btn-info btn-sm float-right" href="{{ url_for('node')}}" role="button">Go Back</a></h2>
+<hr>
+<div class="col-md-6">
+	<div class ="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+			<legend class="border-bottom mb-4">{{ legend }}</legend>
+
+<!-- To change to branch relation -->
+			<div class="form-group">
+				{{ form.branch_group_id.label(class="form-control-label") }}
+					<select class="custom-select" name="branch_group_id" id="branch_group_id" required> 
+	<!--			    	{{ form.branch_group_id(class="custom-select") }} -->
+				      <option value="">Open this select menu</option>
+				      {% for group in groups %}
+				      	{% if group.id == selected %}
+					      		<option value="{{ group.id }}" selected="">{{group.branch_group_name}}</option>
+					      	{% else %}
+					             <option value="{{ group.id }}">{{group.branch_group_name}}</option>
+				         {% endif %}
+				      {% endfor %}
+				    </select>
+				    <div class="invalid-feedback">
+							{% for error in form.branch_group_id.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+				    </div>
+				
+			</div>
+
+			<div class="form-group">
+				{{ form.branch_id.label(class="form-control-label") }}
+				<select class="custom-select" name="branch_id" id="branch_id" required> 
+					<!-- ajax loads the data -->
+					{% if branch_val %}
+						<option value="{{ branch_val.id }}" selected="">{{branch_val.branch_name}}</option>
+					{% endif %}
+				</select>
+
+					<div class="invalid-feedback">
+							{% for error in form.branch_id.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+				    </div>
+				
+			</div>
+
+			<div class="form-group">
+				{{ form.node_name.label(class="form-control-label") }}
+
+				{% if form.node_name.errors %}
+					{{ form.node_name(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.node_name.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.node_name(class="form-control form-control-lg") }}
+				{% endif %}
+				
+			</div>
+
+
+			<div class="form-group">
+				{{ form.node_password.label(class="form-control-label") }}
+				{% if form.node_password.errors %}
+					{{ form.node_password(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.node_password.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{% if password_val %}
+				    	<input class="form-control form-control-lg" id="node_password" name="node_password" required="" type="password" value="{{ password_val }}">
+				    	{% else %}
+					{{ form.node_password(class="form-control form-control-lg") }}
+					{% endif %}
+				{% endif %}
+				  <span class="input-group-btn float-right">
+		            <a class="reveal" type="button-xs" onclick="showPassword()"> <span class="fa fa-eye" id="showpass"></span></a>
+		          </span> 
+			</div>
+
+
+
+			<div class="form-group">
+				{{ form.description.label(class="form-control-text") }}
+				{% if form.description.errors %}
+					{{ form.description(class="form-control form-control-text is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.description.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.description(class="form-control form-control-text") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.active_status.label(class="form-control-checkbox") }}
+
+				{% if form.active_status.errors %}
+					{{ form.active_status(class="form-control checkbox-inline is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.active_status.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.active_status(class="checkbox-inline") }}
+				{% endif %}
+				
+			</div>
+		
+
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+				<a class="btn btn-outline-secondary" href="{{ url_for('node')}}" role="button">Cancel</a>	
+			</div>
+
+			</fieldset>
+		</form>
+					
+
+
+	</div>
+</div>
+ <script src="{{ url_for('static', filename='js/jq.min.js') }}" ></script>
+
+<script type="text/javascript">
+    $("#branch_group_id").change(function() {
+    	console.log("TEst")
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('get_branches_for_group') }}",
+            data: {
+                group_id: $("#branch_group_id").val()
+
+            },
+            success: function(data) {
+                $("#branch_id").html(data);
+            }
+        });
+    });
+</script>
+
+
+
+<script type="text/javascript">
+function showPassword(){
+  var x = document.getElementById("node_password");
+  var y = document.getElementById("showpass");
+
+  if (x.type === "password") {
+    x.type = "text";
+    y.className ="fa fa-eye-slash";
+  } else {
+    x.type = "password";
+    y.className ="fa fa-eye";
+  }
+}
+
+</script>
+{% endblock content %}

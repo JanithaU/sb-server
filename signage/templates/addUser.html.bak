@@ -1,0 +1,234 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>User<a class="btn btn-info btn-sm float-right" href="{{ url_for('user')}}" role="button">Go Back</a></h2>
+<hr>
+<div class="col-md-6">
+	<div class ="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+			<legend class="border-bottom mb-4">{{ legend }}</legend>
+
+			<div class="form-group">
+				{{ form.firstname.label(class="form-control-label") }}
+
+				{% if form.firstname.errors %}
+					{{ form.firstname(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.firstname.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.firstname(class="form-control form-control-lg") }}
+				{% endif %}
+				
+			</div>
+
+{% if not hide_pw  %}
+			<div class="form-group">
+				{{ form.username.label(class="form-control-label") }}
+
+				{% if form.username.errors %}
+					{{ form.username(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.username.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.username(class="form-control form-control-lg" ) }}
+				{% endif %}
+				
+			</div>
+{% endif %}
+			<div class="form-group">
+				{{ form.email.label(class="form-control-label") }}
+				{% if form.email.errors %}
+					{{ form.email(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.email.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.email(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+{% if not hide_pw  %}
+			<div class="form-group">
+				{{ form.password.label(class="form-control-label") }}
+				{% if form.password.errors %}
+					{{ form.password(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.password.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.password(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.confirm_password.label(class="form-control-label") }}
+				{% if form.confirm_password.errors %}
+					{{ form.confirm_password(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.confirm_password.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.confirm_password(class="form-control form-control-lg") }}
+				{% endif %}
+			</div>
+{% endif %}
+			<div class="form-group">
+				{{ form.active_status.label(class="form-control-checkbox") }}
+
+				{% if form.active_status.errors %}
+					{{ form.active_status(class="form-control checkbox-inline is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.active_status.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.active_status(class="checkbox-inline") }}
+				{% endif %}
+				
+			</div>
+
+			<div >
+				<label class="form-control-label"><h5>Permissions</h5></label>
+						<div class="form-group ml-4">
+								
+
+								{% if form.manage_configuration.errors %}
+									{{ form.manage_configuration(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_configuration.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_configuration(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_configuration.label(class="form-control-checkbox") }}
+						</div>			
+						<div class="form-group ml-4 ">
+
+								{% if form.manage_settings.errors %}
+									{{ form.manage_settings(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_settings.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_settings(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_settings.label(class="form-control-checkbox") }}
+
+						</div>	
+						<div class="form-group ml-4">
+
+								{% if form.manage_content.errors %}
+									{{ form.manage_content(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_content.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_content(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_content.label(class="form-control-checkbox") }}
+
+						</div>	
+						<div class="form-group ml-4">
+
+								{% if form.manage_schedule.errors %}
+									{{ form.manage_schedule(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_schedule.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_schedule(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_schedule.label(class="form-control-checkbox") }}
+
+						</div>	
+						<div class="form-group ml-4">
+
+								{% if form.manage_news.errors %}
+									{{ form.manage_news(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_news.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_news(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_news.label(class="form-control-checkbox") }}
+
+						</div>	
+						<div class="form-group ml-4">
+
+								{% if form.manage_report.errors %}
+									{{ form.manage_report(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_report.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_report(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_report.label(class="form-control-checkbox") }}
+
+						</div>	
+						<div class="form-group ml-4">
+
+								{% if form.manage_user.errors %}
+									{{ form.manage_user(class="form-control checkbox-inline is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.manage_user.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.manage_user(class="checkbox-inline") }}
+								{% endif %}
+
+								{{ form.manage_user.label(class="form-control-checkbox") }}
+
+						</div>		
+			</div>
+
+
+
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+				<a class="btn btn-outline-secondary" href="{{ url_for('user')}}" role="button">Cancel</a>	
+			</div>
+
+			</fieldset>
+		</form>
+					
+
+
+	</div>
+</div>
+
+{% endblock content %}

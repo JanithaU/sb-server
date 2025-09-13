@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>News<div class="float-right"><a class="btn btn-info btn-sm" href="{{ url_for('publishNews') }}" role="button">Publish News</a>&nbsp; &nbsp;<a class="btn btn-info btn-sm" href="{{ url_for('newsAdd')}}" role="button">+ Add News</a></div></h2> 
+
+<hr>
+{% if news %}
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Topic</th>
+      <th scope="col">Start Date</th>
+      <th scope="col">End Date</th>
+      <th scope="col">Status</th>
+      <th scope="col">Order</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in news %}
+            <tr>
+              <td>{{ br.heading }}</td>
+              <td>{{ br.start_date.strftime('%m/%d/%Y ') }}</td>
+              <td>
+              {% if br.never_expire %}
+               <span class="text-info">Never Expire</span>
+               {% else %}
+                 {{ br.end_date.strftime('%d/%m/%Y ') }}
+              {% endif %}
+              </td>
+              <td>
+              	{% if br.active_status == 1 %}
+                 <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-dark"> Deactive </span>
+                {% endif %}
+
+              </td>
+              <td>{{ br.order }}</td>
+
+              <td><a href="{{ url_for('newsView', news_id=br.id) }}" class="badge badge-info">View</a>&nbsp;<a href="{{ url_for('updateNews', news_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+                    <form action="{{ url_for('deleteNews', news_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete News {{ br.heading }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form>
+              </td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add News to the system</p>
+</div>
+{% endif %}
+
+
+
+
+<script type="text/javascript">
+  function ConfirmDelete()
+{
+  var x = confirm("Are you sure you want to delete?");
+  if (x)
+      return true;
+  else
+    return false;
+}
+
+</script>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete User ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+        <form action="{{ url_for('deleteUser', user_id=3) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

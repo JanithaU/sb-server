@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Media<a class="btn btn-info btn-sm float-right" href="{{ url_for('media_Add')}}" role="button">+ Add Media</a></h2> 
+<hr>
+{% if media %}
+<table class="table table-hover table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Media</th>
+      <th scope="col">Name</th>
+      <th scope="col">Type</th>
+      <th scope="col">Size</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+         {% for br in media %}
+            <tr>
+              <td align="center">
+
+                {% if br.media_thumb_name == 'default.png' %}
+                   <img src="{{ url_for('static', filename='images/video_file.png') }}" height="60px" >
+                  {% else %}
+                    <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media_thumb_name ) }}" height="60px">
+                  {% endif %}
+              </td>
+              <td>{{ br.media_name }}</td>
+              <td>{{ br.media_type }}</td>
+              <td>{{ br.media_file_size }}</td>
+              <td>{{ br.media_duration }}</td>
+              <td>
+              	{% if br.active_status == 1 %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-dark"> Deactive </span>
+                {% endif %}
+              </td>
+              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+              <td>
+                        <a href="{{ url_for('viewMedia', media_id=br.id) }}" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updateMedia', media_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+                        <form action="{{ url_for('deleteMedia', media_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Media {{ br.media_name }} ?')">
+                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
+                    </form>
+
+              </td>
+            </tr>
+            {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Media Files to the system</p>
+</div>
+{% endif %}
+
+
+
+{% endblock content %}
