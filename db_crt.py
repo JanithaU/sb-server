@@ -94,7 +94,7 @@ with app.app_context():
         raise ValueError("SuperAdmin role does not exist")
 
     # create a super user
-    hashed_password = bcrypt.generate_password_hash('superadmin').decode('utf-8')
+    hashed_password = bcrypt.generate_password_hash('superadminJanitha@123').decode('utf-8')
 
 
     settings_update = Settings(version="2.0",company_name="1xtec")
