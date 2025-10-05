@@ -30,26 +30,11 @@
 
         <label class="form-control-label"><h5>Permissions</h5></label>
             <div class="form-group ml-4">
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_configuration %} checked {% else %} unchecked {% endif %} disabled/>  
-              <lable class="form-control-checkbox"> Manage Configuration </lable><br/>
-     
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_settings %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage Settings </lable><br/>
+              {% for x in r %}
 
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_content %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage Content </lable><br/>
-
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_schedule %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage Schedule </lable><br/>
-
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_news %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage News </lable><br/>    
-
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_report %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage Report </lable><br/> 
-
-              <input class="checkbox-inline" type="checkbox" {% if user.manage_user %} checked {% else %} unchecked {% endif %} disabled/>       
-              <lable class="form-control-checkbox"> Manage User </lable><br/>                                                     
+					<span>{{x}} | </span>
+					{% endfor %}
+						<div>                                                
             </div>
 
 

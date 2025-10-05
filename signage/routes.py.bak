@@ -391,6 +391,7 @@ def settings():
 @app.route("/settings/update", methods=['GET', 'POST'])
 @login_required
 def updateSettings():
+    settings = Settings.query.first()
     if not has_permission('manage_settings'):
         abort(403)
     #branch_group.branch_group_name != 
@@ -410,6 +411,7 @@ def updateSettings():
         settings.image_duration=form.image_duration.data
         settings.file_size_limit=form.file_size_limit.data
         settings.time_zone = form.time_zone.data
+        settings.file_size_limit_total = form.file_size_limit_total.data
         db.session.commit()
         flash(f'Settings has been updated !','success')
         return redirect(url_for('settings'))
@@ -419,6 +421,7 @@ def updateSettings():
          form.download_start.data = settings.download_start
          form.image_duration.data = settings.image_duration
          form.file_size_limit.data = settings.file_size_limit
+         form.file_size_limit_total.data = settings.file_size_limit_total
          form.time_zone.data = settings.time_zone
 
     return render_template('settings_update.html', title='Settings Update', pytz_data = pytz.all_timezones,  form=form)  
@@ -501,6 +504,8 @@ def branch_group_function():
 @app.route("/branch/group/add", methods=['GET', 'POST'])
 @login_required
 def branch_group_function_Add():
+    if not has_permission('manage_configuration'):
+        abort(403)
     form = AddBranchGroupForm()
     if form.validate_on_submit():
         branch = branchGroup(
@@ -845,6 +850,55 @@ def save_thumb(form_media):
     return media_fn
 
 
+# @app.route("/media/add", methods=['GET', 'POST'])
+# @login_required
+# def media_Add():
+#     if not has_permission('manage_content'):
+#         abort(403)
+
+#     form = AddMediaForm()
+#     if form.validate_on_submit():
+#         if not re.match("^[A-Za-z0-9_-]*$", form.media_name.data):
+#             return redirect(url_for('media_Add'))
+
+#         media_file = save_media(form.media_file.data, form.media_name.data)
+#         thumb_file = save_thumb(form.media_file.data)
+
+#         print("MEDIA Saved")
+#         b = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upload_assets/upload_media/'+media_file)
+#         c = os.path.getsize(b)
+#         kb = str(round(c/(1000*1000),2)) + ' MB'
+#         print("MEDIA Saved")
+
+#         if media_file.split('.')[1] == 'mp4':
+#             m_format = 'Video'
+#             duration =  '0'+str(datetime.timedelta(seconds=int(form.media_duration.data.split('.')[0])))
+#         else:
+#             m_format = 'Image'
+#             duration = '00:00:' + str(Settings.query.get_or_404(1).image_duration)
+
+#         print("fine")
+#         media = Media(
+#                     media_name=media_file,
+#                     media_thumb_name = thumb_file,
+#                     media_file_size = kb,
+#                     media_type = m_format,
+#                     media_duration = duration,
+#                     description=form.description.data,
+#                     active_status=form.active_status.data,                    
+#                     )
+#         print(media)
+#         db.session.add(media)
+#         db.session.commit()
+
+
+#         flash(f'Media {form.media_name.data} Added !', 'success')
+#         #return redirect(url_for('media'))
+#         return jsonify({'Valid':'True'})
+
+
+
+#     return render_template('media_add.html', title='Add Media', legend = 'Add Media', form=form, update=False)  
 @app.route("/media/add", methods=['GET', 'POST'])
 @login_required
 def media_Add():
@@ -852,48 +906,77 @@ def media_Add():
         abort(403)
 
     form = AddMediaForm()
+    settings = Settings.query.get_or_404(1)
+
     if form.validate_on_submit():
+        # --- Media name validation ---
         if not re.match("^[A-Za-z0-9_-]*$", form.media_name.data):
-            return redirect(url_for('media_Add'))
+            return jsonify({
+                'Valid': False,
+                'error': "Media name contains invalid characters (only letters, numbers, _ and - allowed)."
+            })
 
-        media_file = save_media(form.media_file.data, form.media_name.data)
-        thumb_file = save_thumb(form.media_file.data)
+        # --- Check uploaded file size ---
+        uploaded_file = form.media_file.data
+        uploaded_file.seek(0, os.SEEK_END)
+        file_size_bytes = uploaded_file.tell()
+        uploaded_file.seek(0)  # reset pointer
+        file_size_mb = round(file_size_bytes / (1024 * 1024), 2)
 
-        print("MEDIA Saved")
-        b = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upload_assets/upload_media/'+media_file)
-        c = os.path.getsize(b)
-        kb = str(round(c/(1000*1000),2)) + ' MB'
-        print("MEDIA Saved")
+        if file_size_mb > settings.file_size_limit:
+            return jsonify({
+                'Valid': False,
+                'error': f"File too large! Limit is {settings.file_size_limit} MB"
+            })
 
-        if media_file.split('.')[1] == 'mp4':
+        # --- Check total size of all media ---
+        total_size_strs = db.session.query(Media.media_file_size).all()  # values like "12.3 MB"
+        total_size_mb = sum(float(s[0].replace(" MB", "")) for s in total_size_strs)
+
+        if (total_size_mb + file_size_mb) > settings.file_size_limit_total:
+            return jsonify({
+                'Valid': False,
+                'error': f"Total media size limit exceeded! "
+                         f"Limit = {settings.file_size_limit_total} MB"
+            })
+
+        # --- Save media only after checks pass ---
+        media_file = save_media(uploaded_file, form.media_name.data)
+        thumb_file = save_thumb(uploaded_file)
+
+        if media_file.split('.')[-1].lower() == 'mp4':
             m_format = 'Video'
-            duration =  '0'+str(datetime.timedelta(seconds=int(form.media_duration.data.split('.')[0])))
+            duration = '0' + str(datetime.timedelta(
+                seconds=int(float(form.media_duration.data.split('.')[0])))
+            )
         else:
             m_format = 'Image'
-            duration = '00:00:' + str(Settings.query.get_or_404(1).image_duration)
+            duration = f"00:00:{settings.image_duration}"
 
-        print("fine")
         media = Media(
-                    media_name=media_file,
-                    media_thumb_name = thumb_file,
-                    media_file_size = kb,
-                    media_type = m_format,
-                    media_duration = duration,
-                    description=form.description.data,
-                    active_status=form.active_status.data,                    
-                    )
-        print(media)
+            media_name=media_file,
+            media_thumb_name=thumb_file,
+            media_file_size=f"{file_size_mb} MB",
+            media_type=m_format,
+            media_duration=duration,
+            description=form.description.data,
+            active_status=form.active_status.data,
+        )
+
         db.session.add(media)
         db.session.commit()
 
+        return jsonify({'Valid': True})
 
-        flash(f'Media {form.media_name.data} Added !', 'success')
-        #return redirect(url_for('media'))
-        return jsonify({'Valid':'True'})
+    # If GET or invalid form
+    return render_template(
+        'media_add.html',
+        title='Add Media',
+        legend='Add Media',
+        form=form,
+        update=False
+    )
 
-
-
-    return render_template('media_add.html', title='Add Media', legend = 'Add Media', form=form, update=False)  
 
 
 
@@ -1536,6 +1619,7 @@ def defaultSchedule():
     if request.method == 'POST':
         print('Post request')
         nodes=request.form['nodes'].split(',')
+        print(nodes)
         playlist_id=request.form['playlist_id']
         get_p_d = PlaylistDefault.query.filter_by(playlist_id=playlist_id).first()
         if not get_p_d:
@@ -1551,6 +1635,7 @@ def defaultSchedule():
             current_p_d_id = get_p_d.id
 
         for x in nodes:
+            print(x)
             node_data = Node.query.get(int(x))
             node_data.playlist_default_id = current_p_d_id
   

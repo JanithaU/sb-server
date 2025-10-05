@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Playlist
+	<div class="float-right"><a href="{{ url_for('playlist_items', playlist_id=playlist.id)}}" class="btn btn-info btn-sm ">+ Media</a>&nbsp;
+	<a class="btn btn-info btn-sm" href="{{ url_for('playlist')}}" role="button">Back</a>
+</div>
+</h2><h6><span class="badge badge-secondary"> {{playlist.playlist_name}}</span></h6> 
+<hr>
+
+
+
+<div class="modal-body">
+<div style="width: 160px; height: 300px">
+   <select size="4" name="mediaselect" id="mediaselect" style="width: 160px; height: 300px">
+	{% for media in plmedia %}
+		<option value="{{media.media.id}}">{{media.media.media_name}}</option>
+	{% endfor %}
+
+</select>
+                </div>
+
+<div id="divPreview" style="background-color: #FFFFFF; width: 500px; height: 280px;
+                    top: 20px; margin-left: auto; margin-right: auto; z-index: 1; left: 183px; position: absolute;">
+ 				<video controls autoplay height="420px" style="display: none;>
+					<source src="" type="video/mp4">
+				</video> 
+
+				<img src="" id="image_from_url" height="420px">
+
+</div>  
+
+</div>
+
+
+
+ <script src="{{ url_for('static', filename='js/jq.min.js') }}" ></script>
+
+<script type="text/javascript">
+    $("#mediaselect").change(function() {
+    	console.log("TEst")
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('get_media_for_playlist_preview') }}",
+            data: {
+                media_id: $("#mediaselect").val()
+
+            },
+            success: function(data) {
+            	console.log(data);
+            	var str = data;
+            	var sp = str.split('=',2)
+            	console.log(sp[0])
+            	var video = $("#divPreview video")[0];
+            	if (sp[0] == 'Video'){
+            		$( "#image_from_url" ).hide();
+            		$("video").show();
+	               video.src = sp[1];
+	               video.load();
+	               video.play();
+               } else{
+               	$( "#image_from_url" ).show();
+               		video.load();
+               		video.pause();
+               	$("video").hide();
+               	$( "#image_from_url" ).attr('src', sp[1] );
+
+               }
+            }
+        });
+    });
+</script>
+
+<!-- 
+<script type="text/javascript">
+	function funCreate(type){
+			  	console.log("TEst 1")
+
+	  if (type){
+	  	console.log("TEst")
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('get_media_for_playlist_preview') }}",
+            data: {
+                media_id: $("#mediaselect").val()
+
+            },
+            success: function(data) {
+               var video = $("#divPreview video")[0];
+               video.src = data;
+               video.load();
+               video.play();
+            }
+        });
+	  }
+	}
+
+
+</script> -->
+{% endblock content %}
+
+
+

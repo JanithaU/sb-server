@@ -41,3 +41,9 @@ Pipfile.lock
 build/
 dist/
 *.egg-info/
+
+
+.bk
+.bak
+.bak2
+.bk2

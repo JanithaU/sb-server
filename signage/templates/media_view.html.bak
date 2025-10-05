@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Media <span class="badge badge-secondary"> {{media.media_name}}</span><a class="btn btn-info btn-sm float-right" href="{{ url_for('media')}}" role="button">Back</a></h2> 
+<hr>
+
+<table>
+<td><th>
+{% if media.media_type == 'Video' %}
+	<video controls autoplay height="480px">
+	  <source src="{{url_for('static', filename='upload_assets/upload_media/'+media.media_name)}}" type="video/mp4">
+	</video>
+{% else %}
+	<img src="{{url_for('static', filename='upload_assets/upload_media/'+media.media_name)}}" height="480px" />
+{% endif %}
+	
+</th>
+{% if media.description %}
+<th class="align-text-top text-center"><h3>&nbsp;&nbsp; &nbsp;&nbsp;Description</h3><span class="align-text-top text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{media.description}}</span>
+</th>
+{% endif %}
+</td>
+
+</table>
+
+{% endblock content %}
+
+
+

@@ -3,6 +3,7 @@
 
 <h2>Media<a class="btn btn-info btn-sm float-right" href="{{ url_for('media_Add')}}" role="button">+ Add Media</a></h2> 
 <hr>
+{% if media %}
 <table class="table table-hover table-bordered">
   <thead>
     <tr>
@@ -33,15 +34,13 @@
               <td>{{ br.media_file_size }}</td>
               <td>{{ br.media_duration }}</td>
               <td>
-              	{% if br.active_status == '1' and br.in_a_playlist == '1' %}
-              	<p>active in P</p>
-                {% elif br.active_status == 1 %}
-                <p> active </p>
-              	{% else %}
-              	<p> Deactive </p>
-              	{% endif %}
+              	{% if br.active_status == 1 %}
+                <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-dark"> Deactive </span>
+                {% endif %}
               </td>
-              <td>{{ br.added_date.strftime('%m/%d/%Y') }}</td>
+              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
               <td>
                         <a href="{{ url_for('viewMedia', media_id=br.id) }}" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updateMedia', media_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
                         <form action="{{ url_for('deleteMedia', media_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Media {{ br.media_name }} ?')">
@@ -53,7 +52,12 @@
             {% endfor %}
   </tbody>
 </table>
-
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Media Files to the system</p>
+</div>
+{% endif %}
 
 
 

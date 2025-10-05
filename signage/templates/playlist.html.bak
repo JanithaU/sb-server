@@ -3,6 +3,8 @@
 
 <h2>Playlist<a class="btn btn-info btn-sm float-right" href="{{ url_for('playlist_Add')}}" role="button">+ Add Playlist</a></h2> 
 <hr>
+
+{% if play_list %}
 <table class="table table-hover table-bordered">
   <thead>
     <tr>
@@ -22,24 +24,31 @@
               <td>{{ br.playlist_type }}</td>
               <td>{{ br.total_duration }}</td>
               <td>
-              	{% if br.active_status == 1 and br.in_a_schedule == '1' and br.in_a_default_schedule == '1' %}
-              	<p>active in S D</p>
-                {% elif br.active_status == 1 and br.in_a_schedule == '1' and br.in_a_default_schedule == '0' %}
-                <p> active S</p>
-                {% elif br.active_status == 1 and br.in_a_schedule == '0' and br.in_a_default_schedule == '1' %}
-                <p> active D</p>
-                {% elif br.active_status == 1 and br.in_a_schedule == '0' and br.in_a_default_schedule == '0' %}
-                <p> active </p>
+              	{% if br.active_status == 1 %}
+              	 <span class="badge badge-success">Active</span>
+                {% else %}
+                <span class="badge badge-dark"> Deactive </span>
+                {% endif %}
 
-              	{% elif br.active_status == 1 %}
-                <p> active </p>
-                {% elif br.active_status == 0 %}
-                
-              	<p> Deactive </p>
-              	{% endif %}
+                {% if br.playlistdefault %}
+                   {% for x in br.playlistdefault %}
+                     {% if x.nodes %}
+                         <span class="badge badge-success">D</span>
+                     {% endif %}
+                   {% endfor %}
+                {% endif %}
+
+
+                {% if br.playlistadhoc %}
+                 <span class="badge badge-success">A</span>
+                {% endif %}
+
+
+
+
               </td>
-              <td>{{ br.added_date.strftime('%m/%d/%Y') }}</td>
-              <td><a href="#" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updatePlaylist', pl_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<a href="{{ url_for('playlist_items', playlist_id=br.id)}}" class="badge badge-light">+ Media</a>&nbsp;
+              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+              <td><a href="{{ url_for('previewsPlaylist', pl_id=br.id) }}" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updatePlaylist', pl_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<a href="{{ url_for('playlist_items', playlist_id=br.id)}}" class="badge badge-light">+ Media</a>&nbsp;
 
                 <form action="{{ url_for('deletePlaylist', pl_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Playlist : {{ br.playlist_name }} ?')">
                         <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
@@ -48,5 +57,11 @@
             {% endfor %}
   </tbody>
 </table>
+{% else %}
+<div class="alert alert-dark" role="alert">
+  <h4 class="alert-heading">No records to display !</h4>
+  <p>Add Playlists to the system</p>
+</div>
+{% endif %}
 
 {% endblock content %}

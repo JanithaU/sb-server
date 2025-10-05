@@ -1,72 +1,66 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>User<a class="btn btn-info btn-sm float-right" href="{{ url_for('addUser')}}" role="button">+ Add User</a></h2> 
-
-<hr>
-<table class="table table-hover table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">First Name</th>
-      <th scope="col">User Name</th>
-      <th scope="col">Status</th>
-      <th scope="col">Date</th>
-      <th scope="col">Action</th>
-    
-    </tr>
-  </thead>
-  <tbody>
-         {% for br in users %}
-            <tr>
-              <td>{{ br.firstname }}</td>
-              <td>{{ br.username }}</td>
-              <td>
-              	{% if br.active_status == 1 %}
-                <span class="badge badge-success">Active</span>
-                {% else %}
-                <span class="badge badge-dark"> Deactive </span>
-              	{% endif %}
-              </td>
-              <td>{{ br.date_created.strftime('%d/%m/%Y ') }}</td>
-              <td><a href="{{ url_for('viewUser', user_id=br.id) }}" class="badge badge-info">View</a>&nbsp;<a href="{{ url_for('updateUser', user_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
-                    <form action="{{ url_for('deleteUser', user_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete user {{ br.username }} ?')">
-                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
-                    </form>
-              </td>
-            </tr>
-            {% endfor %}
-  </tbody>
-</table>
-<script type="text/javascript">
-  function ConfirmDelete()
-{
-  var x = confirm("Are you sure you want to delete?");
-  if (x)
-      return true;
-  else
-    return false;
-}
-
-</script>
-<!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete User ?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-        <form action="{{ url_for('deleteUser', user_id=3) }}" method="POST">
-            <input class="btn btn-danger" type="submit" value="Delete">
-        </form>
-      </div>
-    </div>
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">User</h2>
+    <a class="btn btn-info btn-sm" href="{{ url_for('addUser')}}">+ Add User</a>
   </div>
+  <hr>
+
+
+
+
+  {% if users %}
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>First Name</th>
+          <th>User Name</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for br in users %}
+        <tr>
+          <td>{{ br.firstname }}</td>
+          <td>{{ br.username }}</td>
+          <td>
+            {% if br.active_status == 1 %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-dark">Deactive</span>
+            {% endif %}
+          </td>
+          <td>{{ br.date_created.strftime('%d/%m/%Y') }}</td>
+          <td class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+            
+              <a href="{{ url_for('viewUser', user_id=br.id) }}" class="btn btn-info btn-sm flex-fill text-center">View</a>
+              <a href="{{ url_for('updateUser', user_id=br.id) }}" class="btn btn-secondary btn-sm flex-fill text-center">Update</a>
+              <form action="{{ url_for('deleteUser', user_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete user {{ br.username }}?')">
+                <input class="btn btn-danger btn-sm w-100" type="submit" value="Delete">
+              </form>
+            
+          </td>
+
+
+
+
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="alert alert-dark" role="alert">
+    <h4 class="alert-heading">No Users Found!</h4>
+    <p>Add users to the system.</p>
+  </div>
+  {% endif %}
 </div>
 
 {% endblock content %}

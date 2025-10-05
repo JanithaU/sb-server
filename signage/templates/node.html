@@ -1,12 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>Node<a class="btn btn-info btn-sm float-right" href="{{ url_for('node_Add')}}" role="button">+ Add Node</a></h2> 
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">
+        Node</h2>
+        <a class="btn btn-info btn-sm" href="{{ url_for('node_Add')}}" role="button">+ Add Node</a>
+     
+  </div>
 <hr>
 
+
+
+
+
 {% if nodes %}
+<div class="table-responsive"> <!-- makes table scrollable on small screens -->
 <table class="table table-hover table-bordered">
-  <thead>
+  <thead class="thead-light">
     <tr>
       <th scope="col">Group</th>
       <th scope="col">Branch</th>
@@ -14,35 +25,44 @@
       <th scope="col">Status</th>
       <th scope="col">Date</th>
       <th scope="col">Action</th>
-    
     </tr>
   </thead>
   <tbody>
-         {% for br in nodes %}
-            <tr>
-              <td>{{ br.branch.group.branch_group_name }}</td>
-              <td>{{ br.branch.branch_name }}</td>
-              <td>{{ br.node_name }}</td>
-              <td>
-              	{% if br.active_status == 1 %}
-                <span class="badge badge-success">Active</span>
-                {% else %}
-                <span class="badge badge-dark"> Deactive </span>
-              	{% endif %}
-              </td>
-              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
-              <td><a href="{{ url_for('nodeView', node_id=br.id) }}" class="badge badge-info">View</a>&nbsp;<a href="{{ url_for('updateNode', node_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
-                    <form action="{{ url_for('deleteNode', node_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Node : {{ br.node_name }} ?')">
-                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
-                    </form></td>
-            </tr>
-            {% endfor %}
+    {% for br in nodes %}
+    <tr>
+      <td>{{ br.branch.group.branch_group_name }}</td>
+      <td>{{ br.branch.branch_name }}</td>
+      <td>{{ br.node_name }}</td>
+      <td>
+        {% if br.active_status == 1 %}
+          <span class="badge badge-success">Active</span>
+        {% else %}
+          <span class="badge badge-dark">Deactive</span>
+        {% endif %}
+      </td>
+      <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+      <td>
+        <div class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+          <a href="{{ url_for('nodeView', node_id=br.id) }}" class="btn btn-info btn-sm flex-fill text-center">View</a>
+          <a href="{{ url_for('updateNode', node_id=br.id) }}" class="btn btn-secondary btn-sm flex-fill text-center">Update</a>
+          <form action="{{ url_for('deleteNode', node_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Node: {{ br.node_name }}?')" class="m-0">
+            <input class="btn btn-danger btn-sm w-100" type="submit" value="Delete">
+          </form>
+        </div>
+
+      </td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
+</div>
 {% else %}
 <div class="alert alert-dark" role="alert">
-  <h4 class="alert-heading">No records to display !</h4>
-  <p>Add Nodes to the system</p>
+  <h4 class="alert-heading">No records to display!</h4>
+  <p>Add Nodes to the system.</p>
 </div>
 {% endif %}
+
+</div>
+
 {% endblock content %}

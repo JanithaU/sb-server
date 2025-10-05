@@ -1,37 +1,42 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>Branch Group<a class="btn btn-info btn-sm float-right" href="{{ url_for('branch_group_function')}}" role="button">Go Back</a></h2>
-<hr>
-<div class="col-md-6">
-  <div class ="content-section">
-    <form >
-      <fieldset class="form-group">
-      <legend class="border-bottom mb-4">View Branch Group</legend>
 
-      <div class="form-group">
-        <label class="form-control-label">Group Name</label>
-        <input class="form-control form-control-lg" value="{{ bGG.branch_group_name }}" disabled>               
-      </div>
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">Branch Group</h2>
+    <a class="btn btn-info btn-sm" href="{{ url_for('branch_group_function') }}">Go Back</a>
+  </div>
+  <hr>
 
-      <div class="form-group">
-        <label class="form-control-label">Description</label>
-        <input class="form-control form-control-lg" value="{{ bGG.description }}" disabled>               
-      </div>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+      <div class="card shadow-sm p-3">
+        <form>
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">View Branch Group</legend>
 
-      <div class="form-group">
-        <lable class="form-control-checkbox"> Active </lable>
-         <input class="checkbox-inline" type="checkbox" {% if bGG.active_status %} checked {% else %} unchecked {% endif %} disabled/>       
-      </div>
-
-                                                       
+            <!-- Group Name -->
+            <div class="mb-3">
+              <label class="form-label">Group Name</label>
+              <input class="form-control" value="{{ bGG.branch_group_name }}" disabled>
             </div>
 
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <input class="form-control" value="{{ bGG.description }}" disabled>
+            </div>
 
-      </fieldset>
-    </form>
-          
+            <!-- Active Status -->
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" {% if bGG.active_status %} checked {% endif %} disabled>
+              <label class="form-check-label">Active</label>
+            </div>
 
-
+          </fieldset>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -1,0 +1,273 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Add Ad Hoc Schedule</h2>
+<hr>
+
+<form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+<div id="c3-default-wrapper">
+
+
+    <div class="c3-col1">
+            <div class="title">
+                Node Hireachy
+            </div>
+                                <div class="tree-box">
+                                    <ul class="treeview" style="margin: 10px 0px 0px -11px !important">
+                                            {% for group in groups %}
+                                            <li>
+
+                                                <input type="checkbox" name="{{ group.branch_group_name }}" id="{{ group.branch_group_name }}" value="{{ group.id }}">
+                                                <label for="tall" class="custom-unchecked">{{ group.branch_group_name }}</label>
+                                                <ul>
+
+                                                    {% for bran in group.branchs %}
+                                                        {% if bran.active_status %}
+
+                                                                <li>
+                                                                 <input type="checkbox" name="{{ bran.branch_name }}" id="{{ group.branch_group_name }}" value="{{ bran.id }}">
+                                                                 <label for="tall-1" class="custom-unchecked"> {{ bran.branch_name }}</label>  
+                                                         
+
+                                                            <ul>
+                                                                {% for node in bran.nodes %}
+                                                                    {% if node.active_status %}
+                                                                        <li>
+                                                                         <input type="checkbox" name="{{ node.node_name }}" id="{{ node.node_name }}" value="{{ node.id }}">
+                                                                         <label for="tall-1" class="custom-unchecked"> {{ node.node_name }}</label>  
+                                                                        </li>
+
+                                                                    {% endif %}
+
+                                                                {% endfor %}
+                                                             
+                                                           </ul>
+                                                        {% endif %}
+
+                                                </li>                           
+
+                                                    {% endfor %}
+
+                                                    </ul>
+                                            </li>  
+                                            {% endfor %}
+                                        </ul>
+
+                                </div>
+        </div>
+
+
+
+
+
+
+
+    <div class="c3-col2">
+        <div class="title">
+          Available Palylist
+        </div>
+                                    
+                                    <h4><span class="badge badge-info">Full Add</span></h4>
+                                    </br>
+                                    <div class="grid-box" >
+                                        {% if playlists[0] %}
+                                           <table class="table table-hover table-bordered">
+                                                <thead>
+                                                  <tr>
+                                                    <th scope="col">Playlist-Status</th>
+                                                    <th scope="col">Action</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                       {% for br in playlists %}
+                                                          <tr>
+                                                            <td> 
+                                                                <span> {{br.playlist_name}}</span></br>
+
+                                                                <span class="badge badge-secondary"> {{br.total_duration}}</span>
+                                                                <span class="badge badge-secondary"> {{br.total_size}} MB</span>
+                                                            </td>
+                                                            <td>
+
+                                                                {% if form.playlist_id.errors %} 
+                                                                      <input type="radio" name="playlist_id" value="{{br.id}}" class="is-invalid">
+                                                                    <div class="invalid-feedback">
+                                                                        {% for error in form.playlist_id.errors %}
+                                                                            <span>{{ error }}</span>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                {% else %}        
+                                                                       <input type="radio" name="playlist_id" value="{{br.id}}">
+                                                                {% endif %}
+                                                            </td>
+                                                          </tr>
+                                                          {% endfor %}
+                                                </tbody>
+                                              </table>                   
+                                        {% else %}
+                                            <div class="alert alert-dark" role="alert">
+                                              <h4 class="alert-heading">No records to display !</h4>
+                                              <p>Add Playlists to the system</p>
+                                            </div>
+                                            {% endif %}
+
+                                     </div>
+    </div>
+
+
+
+
+    <div class="c3-col3">
+        <div class="title">
+          Schedule Details        
+        </div>
+
+             <div class="grid-box">                   
+                <div style=" margin-top: 10px" class="control-group">
+                            <div class="form-group">
+                                {{ form.addhoc_name.label(class="form-control-label") }}
+
+                                {% if form.addhoc_name.errors %}
+                                    {{ form.addhoc_name(class="form-control form-control-lg is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.addhoc_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.addhoc_name(class="form-control form-control-lg") }}
+                                {% endif %}
+                                
+                            </div> 
+
+
+                            <div class="form-group">
+                                {{ form.start_date.label(class="form-control-label") }}
+
+                                {% if form.start_date.errors %}
+                                    {{ form.start_date(class="form-control form-control-lg is-invalid",type="date")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.start_date.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.start_date(class="form-control form-control-lg",type="date") }}
+                                {% endif %}
+                                
+                            </div> 
+
+                            
+                            <div class="form-group">
+                                {{ form.end_date.label(class="form-control-label") }}
+
+                                {% if form.end_date.errors %}
+                                    {{ form.end_date(class="form-control form-control-lg is-invalid", type="date")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.end_date.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.end_date(class="form-control form-control-lg",type="date") }}
+                                {% endif %}
+                                
+                            </div> 
+
+
+                            <div class="form-group">
+                                {{ form.start_time.label(class="form-control-label") }}
+
+                                {% if form.start_time.errors %}
+                                    {{ form.start_time(class="form-control form-control-lg is-invalid" , type="time", step="2")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.start_time.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.start_time(class="form-control form-control-lg" , type="time", step="2") }}
+                                {% endif %}
+                                
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.end_time.label(class="form-control-label") }}
+
+                                {% if form.end_time.errors %}
+                                    {{ form.end_time(class="form-control form-control-lg is-invalid", type="time", step="2")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.end_time.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.end_time(class="form-control form-control-lg", type="time", step="2") }}
+                                {% endif %}
+                                
+                            </div> 
+
+
+                            
+                            <div class="form-group">
+                                {{ form.description.label(class="form-control-text") }}
+                                {% if form.description.errors %}
+                                    {{ form.description(class="form-control form-control-text is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.description.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.description(class="form-control form-control-text") }}
+                                {% endif %}
+                            </div>
+                       
+
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-outline-info") }}
+                                <a class="btn btn-outline-secondary" href="{{ url_for('node')}}" role="button">Cancel</a>   
+                            </div>
+
+
+                                </div>
+                             </div>
+
+
+</form>
+</div>
+
+
+  <script src="{{ url_for('static', filename='js/jquery-1.6.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+<!-- <script type="text/javascript">
+    function ajaxfunction(val){
+        console.log(val)
+            var favorite = [];
+            $.each($("input[name='node']:checked"), function(){            
+                favorite.push($(this).val());
+            });
+//            alert("My favourite sports are: " + favorite.join(", "));
+
+            $.ajax({
+                type: "POST",
+                url: "{{ url_for('defaultSchedule') }}",
+                data: {
+                    nodes: favorite.join(", "),
+                    playlist_id: val
+                },
+                success: function(data) {
+                    location.reload();
+                }
+            
+            });
+
+
+}
+</script>
+ -->
+
+{% endblock content %}
+

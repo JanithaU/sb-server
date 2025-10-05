@@ -1,152 +1,88 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>Settings<a class="btn btn-info btn-sm float-right" href="{{ url_for('settings')}}" role="button">Go Back</a></h2>
-<hr>
-<div class="col-md-6">
-	<div class ="content-section">
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<fieldset class="form-group">
-			<legend class="border-bottom mb-4">Update Settings</legend>
+
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">Settings</h2>
+    <a class="btn btn-info btn-sm" href="{{ url_for('settings')}}">Go Back</a>
+  </div>
+  <hr>
 
 
-			<div class="form-group">
-				{{ form.time_zone.label(class="form-control-label") }}
-			  <select class="custom-select" name="time_zone" required> 
-				<option value="">Open this select menu</option>
-				{% for pytz in pytz_data %}
-					{% if pytz == form.time_zone.data %}
-							<option value="{{ pytz }}" selected="">{{pytz}}</option>
-						{% else %}
-						   <option value="{{ pytz }}">{{pytz}}</option>
-				   {% endif %}
-				{% endfor %}
-			  </select>
-			  <div class="invalid-feedback">
-					  {% for error in form.time_zone.errors %}
-						  <span>{{ error }}</span>
-					  {% endfor %}
-			  </div>
-			</div>
+  
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
+      <div class="content-section">
+        <form method="POST" action="">
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Update Settings</legend>
+
+            <div class="mb-3">
+              {{ form.time_zone.label(class="form-label") }}
+              <select class="form-select" name="time_zone" required>
+                <option value="">Open this select menu</option>
+                {% for pytz in pytz_data %}
+                  <option value="{{ pytz }}" {% if pytz == form.time_zone.data %} selected {% endif %}>{{ pytz }}</option>
+                {% endfor %}
+              </select>
+              {% for error in form.time_zone.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.download_stop.label(class="form-label") }}
+              {{ form.download_stop(class="form-control", type="time", step="2") }}
+              {% for error in form.download_stop.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.download_start.label(class="form-label") }}
+              {{ form.download_start(class="form-control", type="time", step="2") }}
+              {% for error in form.download_start.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.image_duration.label(class="form-label") }}
+              {{ form.image_duration(class="form-control", type="number", min=1, max=60) }}
+              {% for error in form.image_duration.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.file_size_limit.label(class="form-label") }}
+              {{ form.file_size_limit(class="form-control", type="number", min=1, max=2048) }}
+              {% for error in form.file_size_limit.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              {{ form.file_size_limit_total.label(class="form-label") }}
+              {{ form.file_size_limit_total(class="form-control", type="number", min=1, max=5120) }}
+              {% for error in form.file_size_limit_total.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+              {{ form.submit(class="btn btn-info flex-fill") }}
+              <a class="btn btn-secondary flex-fill" href="{{ url_for('settings')}}" >Cancel</a>
+            </div>
 
 
-
-
-<!-- To change to branch relation -->
-
-			<div class="form-group">
-				{{ form.download_stop.label(class="form-control-label") }}
-
-				{% if form.download_stop.errors %}
-					{{ form.download_stop(class="form-control form-control-lg is-invalid", type="time", step="2") }}
-
-					<div class="invalid-feedback">
-						{% for error in form.download_stop.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.download_stop(class="form-control form-control-lg", type="time", step="2") }}
-
-				{% endif %}
-				
-			</div>
-
-
-			<div class="form-group">
-				{{ form.download_start.label(class="form-control-label") }}
-
-				{% if form.download_start.errors %}
-					{{ form.download_start(class="form-control form-control-lg is-invalid", type="time", step="2")}}
-					<div class="invalid-feedback">
-						{% for error in form.download_start.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.download_start(class="form-control form-control-lg", type="time", step="2") }}
-				{% endif %}
-				
-			</div>
-
-
-
-			<div class="form-group">
-				{{ form.image_duration.label(class="form-control-label") }}
-
-				{% if form.image_duration.errors %}
-					{{ form.image_duration(class="form-control form-control-lg is-invalid", type="number", min=1, max="60")}}
-					<div class="invalid-feedback">
-						{% for error in form.image_duration.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.image_duration(class="form-control form-control-lg", type="number", min=1, max="60") }}
-				{% endif %}
-				
-			</div>
-
-
-			<div class="form-group">
-				{{ form.file_size_limit.label(class="form-control-label") }}
-
-				{% if form.file_size_limit.errors %}
-					{{ form.file_size_limit(class="form-control form-control-lg is-invalid", type="number", min=1, max="2048")}}
-					<div class="invalid-feedback">
-						{% for error in form.file_size_limit.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.file_size_limit(class="form-control form-control-lg", type="number", min=1, max="2048") }}
-				{% endif %}
-				
-			</div>
-
-
-
-			<div class="form-group">
-				{{ form.file_size_limit_total.label(class="form-control-label") }}
-
-				{% if form.file_size_limit_total.errors %}
-					{{ form.file_size_limit_total(class="form-control form-control-lg is-invalid", type="number", min=1, max="5120")}}
-					<div class="invalid-feedback">
-						{% for error in form.file_size_limit_total.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.file_size_limit_total(class="form-control form-control-lg", type="number", min=1, max="5120") }}
-				{% endif %}
-				
-			</div>
-
-
-
-
-
-
-
-			<div class="form-group">
-				{{ form.submit(class="btn btn-outline-info") }}	
-				<a class="btn btn-outline-secondary" href="{{ url_for('settings')}}" role="button">Cancel</a>
-			</div>
-
-			</fieldset>
-		</form>
-					
-
-
-	</div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-<script type="text/javascript">
-  $(function() {
-    $('#download_stop').datetimepicker({
-      pickDate: false
-    });
-  });
-</script>
 {% endblock content %}

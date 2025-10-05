@@ -1,52 +1,59 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>General Settings<a class="btn btn-info btn-sm float-right " href="{{ url_for('updateSettings') }}" role="button">Update Settings</a></h2>
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">General Settings</h2>
+    <a class="btn btn-info btn-sm" href="{{ url_for('updateSettings') }}">Update Settings</a>
+  </div>
 <hr>
-<table class="table table-hover table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Settings</th>
-      <th scope="col">Value</th>
-    
-    </tr>
-  </thead>
-  <tbody>
-            <tr>
-              <td>Company Name</td>
-              <td>{{ sets.company_name }}</td>
-            </tr>
-            <tr>
-              <td>Time Zone</td>
-              <td>{{ sets.time_zone }}</td>
-            </tr>
-            <tr>
-              <td>Download Stop Time</td>
-              <td>{{ sets.download_stop }}</td>
-            </tr>
-                        <tr>
-              <td>Download Start Time</td>
-              <td>{{ sets.download_start }}</td>
-            </tr>
-                        <tr>
-              <td>Default Image Duration</td>
-              <td>{{ sets.image_duration }}</td>
-            </tr>
-                        <tr>
-              <td>File Size Limit(MB)</td>
-              <td>{{ sets.file_size_limit }}</td>
-            </tr>
 
-            <tr>
-              <td>Total File limit(MB)</td>
-              <td>{{ sets.file_size_limit_total }}</td>
-            </tr>
-                        <tr>
-              <td>Version</td>
-              <td>{{ sets.version }}</td>
-            </tr>
-            
-  </tbody>
-</table>
+
+
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Settings</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Company Name</td>
+        <td>{{ sets.company_name }}</td>
+      </tr>
+      <tr>
+        <td>Time Zone</td>
+        <td>{{ sets.time_zone }}</td>
+      </tr>
+      <tr>
+        <td>Download Stop Time</td>
+        <td>{{ sets.download_stop }}</td>
+      </tr>
+      <tr>
+        <td>Download Start Time</td>
+        <td>{{ sets.download_start }}</td>
+      </tr>
+      <tr>
+        <td>Default Image Duration</td>
+        <td>{{ sets.image_duration }}</td>
+      </tr>
+      <tr>
+        <td>File Size Limit(MB)</td>
+        <td>{{ sets.file_size_limit }}</td>
+      </tr>
+      <tr>
+        <td>Total File Limit(MB)</td>
+        <td>{{ sets.file_size_limit_total }}</td>
+      </tr>
+      <tr>
+        <td>Version</td>
+        <td>{{ sets.version }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
 {% endblock content %}
-
-

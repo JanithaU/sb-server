@@ -1,64 +1,126 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>Media<a class="btn btn-info btn-sm float-right" href="{{ url_for('media_Add')}}" role="button">+ Add Media</a></h2> 
+<div class="container mt-3">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">Media</h2>
+  <a class="btn btn-info btn-sm" href="{{ url_for('media_Add')}}" >+ Add Media</a>
+</div>
 <hr>
+
+
+
+
 {% if media %}
-<table class="table table-hover table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Media</th>
-      <th scope="col">Name</th>
-      <th scope="col">Type</th>
-      <th scope="col">Size</th>
-      <th scope="col">Duration</th>
-      <th scope="col">Status</th>
-      <th scope="col">Date</th>
-      <th scope="col">Action</th>
-    
-    </tr>
-  </thead>
-  <tbody>
-         {% for br in media %}
-            <tr>
-              <td align="center">
+  <!-- Desktop Table (visible on md and above) -->
+  <div class="d-none d-md-block">
+    <table class="table table-hover table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Media</th>
+          <th scope="col">Name</th>
+          <th scope="col">Type</th>
+          <th scope="col">Size</th>
+          <th scope="col">Duration</th>
+          <th scope="col">Status</th>
+          <th scope="col">Date</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for br in media %}
+        <tr>
+          <td class="text-center align-middle">
+            {% if br.media_thumb_name == 'default.png' %}
+              <img src="{{ url_for('static', filename='images/video_file.png') }}"
+                  class="object-fit-cover rounded border"
+                  style="width: 80px; height: 60px;" alt="Thumbnail">
+            {% else %}
+              <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media_thumb_name) }}"
+                  class="object-fit-cover rounded border"
+                  style="width: 80px; height: 60px;" alt="Thumbnail">
+            {% endif %}
+          </td>
+          <td>{{ br.media_name }}</td>
+          <td>{{ br.media_type }}</td>
+          <td>{{ br.media_file_size }}</td>
+          <td>{{ br.media_duration }}</td>
+          <td>
+            {% if br.active_status == 1 %}
+              <span class="badge badge-success">Active</span>
+            {% else %}
+              <span class="badge badge-dark">Deactive</span>
+            {% endif %}
+          </td>
+          <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
+          <td class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+            <a href="{{ url_for('viewMedia', media_id=br.id) }}" class="btn btn-info btn-sm flex-fill">Preview</a>
+            <a href="{{ url_for('updateMedia', media_id=br.id) }}" class="btn btn-secondary btn-sm flex-fill">Update</a>
+            <form action="{{ url_for('deleteMedia', media_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Media {{ br.media_name }} ?')" class="d-inline">
+              <input class="btn btn-danger btn-sm w-100" type="submit" value="Delete">
+            </form>
+          </td>
 
-                {% if br.media_thumb_name == 'default.png' %}
-                   <img src="{{ url_for('static', filename='images/video_file.png') }}" height="60px" >
-                  {% else %}
-                    <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media_thumb_name ) }}" height="60px">
-                  {% endif %}
-              </td>
-              <td>{{ br.media_name }}</td>
-              <td>{{ br.media_type }}</td>
-              <td>{{ br.media_file_size }}</td>
-              <td>{{ br.media_duration }}</td>
-              <td>
-              	{% if br.active_status == 1 %}
+
+
+
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Cards (visible on sm and xs) -->
+  <div class="d-block d-md-none">
+    {% for br in media %}
+    <div class="card mb-3">
+      <div class="row no-gutters">
+<div class="col-4">
+  {% if br.media_thumb_name == 'default.png' %}
+    <img src="{{ url_for('static', filename='images/video_file.png') }}"
+         class="card-img object-fit-cover rounded border"
+         style="width: 100%; height: 120px; object-fit: cover;"
+         alt="{{ br.media_name }}">
+  {% else %}
+    <img src="{{ url_for('static', filename='upload_assets/upload_media/thumbnails/' + br.media_thumb_name) }}"
+         class="card-img object-fit-cover rounded border"
+         style="width: 100%; height: 120px; object-fit: cover;"
+         alt="{{ br.media_name }}">
+  {% endif %}
+</div>
+        <div class="col-8">
+          <div class="card-body p-2">
+            <h5 class="card-title">{{ br.media_name }}</h5>
+            <p class="card-text mb-1"><strong>Type:</strong> {{ br.media_type }}</p>
+            <p class="card-text mb-1"><strong>Size:</strong> {{ br.media_file_size }}</p>
+            <p class="card-text mb-1"><strong>Duration:</strong> {{ br.media_duration }}</p>
+            <p class="card-text mb-1">
+              <strong>Status:</strong> 
+              {% if br.active_status == 1 %}
                 <span class="badge badge-success">Active</span>
-                {% else %}
-                <span class="badge badge-dark"> Deactive </span>
-                {% endif %}
-              </td>
-              <td>{{ br.added_date.strftime('%d/%m/%Y') }}</td>
-              <td>
-                        <a href="{{ url_for('viewMedia', media_id=br.id) }}" class="badge badge-info">Preview</a>&nbsp;<a href="{{ url_for('updateMedia', media_id=br.id) }}" class="badge badge-secondary">Update</a>&nbsp;<!--<a href="#" class="badge badge-danger" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
-                        <form action="{{ url_for('deleteMedia', media_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Media {{ br.media_name }} ?')">
-                        <input class="btn btn-danger btn-xs" type="submit" value="Delete" >
-                    </form>
+              {% else %}
+                <span class="badge badge-dark">Deactive</span>
+              {% endif %}
+            </p>
+            <p class="card-text mb-2"><small class="text-muted">{{ br.added_date.strftime('%d/%m/%Y') }}</small></p>
+            <a href="{{ url_for('viewMedia', media_id=br.id) }}" class="btn btn-info btn-sm mb-1">Preview</a>
+            <a href="{{ url_for('updateMedia', media_id=br.id) }}" class="btn btn-secondary btn-sm mb-1">Update</a>
+            <form action="{{ url_for('deleteMedia', media_id=br.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete Media {{ br.media_name }} ?')">
+              <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 
-              </td>
-            </tr>
-            {% endfor %}
-  </tbody>
-</table>
 {% else %}
 <div class="alert alert-dark" role="alert">
-  <h4 class="alert-heading">No records to display !</h4>
-  <p>Add Media Files to the system</p>
+  <h4 class="alert-heading">No records to display!</h4>
+  <p>Add Media Files to the system.</p>
 </div>
 {% endif %}
-
-
-
+</div>
 {% endblock content %}

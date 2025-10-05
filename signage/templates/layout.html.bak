@@ -20,6 +20,13 @@
         <title>Signage</title>
     {% endif %}
 
+<style type="text/css">
+  
+body {
+  font-size: .9rem !important;
+
+  }
+</style>
 
 
 </head>
@@ -61,6 +68,7 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="{{ url_for('media')}}">Media</a>
               <a class="dropdown-item" href="{{ url_for('playlist')}}">Playlist</a>
+              <!-- <a class="dropdown-item" href="{{ url_for('template')}}">Template</a> -->
             </div>
       </li>
 
@@ -72,12 +80,13 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="{{ url_for('defaultSchedule') }}">Default Schedule</a>
+              <!-- <a class="dropdown-item" href="#">Default Template</a> -->
               <a class="dropdown-item" href="{{url_for('adhocschedule')}}">Ad Hoc Schedule</a>
             </div>
       </li>
 
 
-		<a class="nav-item nav-link" href="{{ url_for('news')}}">News</a>
+	<!-- 	<a class="nav-item nav-link" href="{{ url_for('news')}}">News</a>
 		<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Reports
@@ -86,7 +95,7 @@
               <a class="dropdown-item" href="#">User Reports</a>
             </div>
       </li>
-            </div>
+ -->            </div>
 
 
             <!-- Navbar Right Side -->
@@ -97,6 +106,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a>
+              <a class="dropdown-item" id="theme-toggle">☀️ / 🌙 </a>
 
             </div>
       </li>
@@ -154,6 +164,27 @@
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}" ></script>
   <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 
+
+  <script>
+    const toggleButton = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    }
+
+    // Toggle theme on button click
+    toggleButton.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+</script>
 
 
 </body>

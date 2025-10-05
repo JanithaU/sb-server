@@ -1,19 +1,34 @@
-
-/* Base Theme */
+/* ============================= */
+/* Base Theme (Light Mode) */
+/* ============================= */
 :root {
-  --background-color: white;
-  --text-color: black;
-  --article-color :#444444;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --article-color: #444444;
+  --card-background: #ffffff;
+  --border-color: #dddddd;
+  --nav-bg: #263c85;
+  --nav-link-color: #cbd5db;
+  --nav-link-hover: #ffffff;
 }
 
+/* ============================= */
 /* Dark Theme */
+/* ============================= */
 [data-theme="dark"] {
   --background-color: #121212;
-  --text-color: #ffffff !important;
-  --article-color :#aebac9;
+  --text-color: #ffffff;
+  --article-color: #aebac9;
+  --card-background: #1e1e1e;
+  --border-color: #333333;
+  --nav-bg: #0d1a40;
+  --nav-link-color: #aebac9;
+  --nav-link-hover: #ffffff;
 }
 
-
+/* ============================= */
+/* Global Styles */
+/* ============================= */
 body {
   background-color: var(--background-color);
   color: var(--text-color);
@@ -24,32 +39,35 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--article-color);
 }
 
+/* Navbar */
 .bg-steel {
-  background-color: #263c85;
+  background-color: var(--nav-bg);
 }
 
 .site-header .navbar-nav .nav-link {
-  color: #cbd5db;
+  color: var(--nav-link-color);
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color: #ffffff;
+  color: var(--nav-link-hover);
 }
 
 .site-header .navbar-nav .nav-link.active {
   font-weight: 500;
 }
 
+/* Card / Section Content */
 .content-section {
-  background: #ffffff;
+  background: var(--card-background);
   padding: 10px 10px;
-  border: 1px solid #dddddd;
+  border: 1px solid var(--border-color);
   border-radius: 3px;
   margin-bottom: 20px;
 }
 
+/* Articles */
 .article-title {
-  color: var(--article-color);;
+  color: var(--article-color);
 }
 
 a.article-title:hover {
@@ -70,7 +88,7 @@ a.article-title:hover {
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3
+  border-bottom: 1px solid var(--border-color);
 }
 
 .article-metadata a:hover {
@@ -84,6 +102,7 @@ a.article-title:hover {
   vertical-align: middle;
 }
 
+/* Accounts */
 .account-img {
   height: 125px;
   width: 125px;
@@ -95,14 +114,15 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
+/* Buttons */
 .btn-xs {
-    display: inline-block;
-    padding: .25em .4em;
-    font-size: 75%;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: .25rem;
+  display: inline-block;
+  padding: .25em .4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
 }

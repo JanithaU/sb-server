@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Branch Group<a class="btn btn-info btn-sm float-right" href="{{ url_for('branch_group_function')}}" role="button">Go Back</a></h2>
+<hr>
+<div class="col-md-6">
+	<div class ="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+			<legend class="border-bottom mb-4">{{ legend }}</legend>
+
+			<div class="form-group">
+				{{ form.branch_group_name.label(class="form-control-label") }}
+
+				{% if form.branch_group_name.errors %}
+					{{ form.branch_group_name(class="form-control form-control-lg is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.branch_group_name.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.branch_group_name(class="form-control form-control-lg") }}
+				{% endif %}
+				
+			</div>
+
+			<div class="form-group">
+				{{ form.description.label(class="form-control-text") }}
+				{% if form.description.errors %}
+					{{ form.description(class="form-control form-control-text is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.description.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.description(class="form-control form-control-text") }}
+				{% endif %}
+			</div>
+
+			<div class="form-group">
+				{{ form.active_status.label(class="form-control-checkbox") }}
+
+				{% if form.active_status.errors %}
+					{{ form.active_status(class="form-control checkbox-inline is-invalid")}}
+					<div class="invalid-feedback">
+						{% for error in form.active_status.errors %}
+							<span>{{ error }}</span>
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ form.active_status(class="checkbox-inline") }}
+				{% endif %}
+				
+			</div>
+		
+
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+				<a class="btn btn-outline-secondary" href="{{ url_for('branch_group_function')}}" role="button">Cancel</a>	
+			</div>
+
+			</fieldset>
+		</form>
+					
+
+
+	</div>
+</div>
+
+{% endblock content %}

@@ -1,114 +1,107 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>Media<a class="btn btn-info btn-sm float-right" href="{{ url_for('media')}}" role="button">Go Back</a></h2>
-<hr>
-<div class="col-md-6">
-	<div class ="content-section">
-		<form method="POST" action="" enctype="multipart/form-data" {%if not update %} id='upload' {% endif %}>
-			{{ form.hidden_tag() }}
-			<fieldset class="form-group">
-			<legend class="border-bottom mb-4">{{legend}}</legend>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10 col-12 mt-4">
+      <div class="content-section p-4 border rounded shadow-sm bg-light">
+        <form method="POST" action="" enctype="multipart/form-data" {% if not update %} id="upload" {% endif %}>
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4 text-center">{{ legend }}</legend>
 
-<!-- To change to branch relation -->
+            <!-- Media Name -->
+            <div class="form-group">
+              {{ form.media_name.label(class="form-control-label") }}
+              {% if not update %}
+                {% if form.media_name.errors %}
+                  {{ form.media_name(class="form-control form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.media_name.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.media_name(class="form-control form-control-lg") }}
+                {% endif %}
+              {% else %}
+                <input class="form-control form-control-lg" id="media_name" name="media_name" disabled type="text" value="{{ form.media_name.data }}">
+                <input type="hidden" name="media_name" value="{{ form.media_name.data }}">
+              {% endif %}
+            </div>
 
+            <!-- Media File (only on add) -->
+            {% if not update %}
+              <div class="form-group">
+                {{ form.media_file.label() }}
+                {{ form.media_file(class="form-control-file", id="media_file") }}
+                {% if form.media_file.errors %}
+                  {% for error in form.media_file.errors %}
+                    <span class="text-danger">{{ error }}</span><br>
+                  {% endfor %}
+                {% endif %}
+              </div>
 
-			<div class="form-group">
-				{{ form.media_name.label(class="form-control-label") }}
+              <!-- Progress bar -->
+              <div class="progress mb-3">
+                <div id="progressBar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                  0%
+                </div>
+              </div>
+            {% endif %}
 
-				{% if not update %}
-					{% if form.media_name.errors %}
-						{{ form.media_name(class="form-control form-control-lg is-invalid")}}
-						<div class="invalid-feedback">
-							{% for error in form.media_name.errors %}
-								<span>{{ error }}</span>
-							{% endfor %}
-						</div>
-					{% else %}
-						{{ form.media_name(class="form-control form-control-lg") }}
-					{% endif %}
-					
-			{% else %}	
-			<input class="form-control form-control-lg" id="media_name" name="media_name" disabled type=	"text" value="{{form.media_name.data}}">
-			<input class="form-control form-control-lg" id="media_name" name="media_name"  type="hidden" value="{{form.media_name.data}}">
-			{% endif %}
-			</div>
+            <!-- Description -->
+            <div class="form-group">
+              {{ form.description.label(class="form-control-text") }}
+              {% if form.description.errors %}
+                {{ form.description(class="form-control form-control-text is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.description.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ form.description(class="form-control form-control-text") }}
+              {% endif %}
+            </div>
 
-		{% if not update %}
-			<div class="form-group">
-				{{ form.media_file.label() }}	
-					{{ form.media_file(class="form-control-file", id="media_file") }}
-					{% if form.media_file.errors %}
-						{% for error in form.media_file.errors %}
-								<span class="text-danger">{{ error }}</span></div></br>
-						{% endfor %}
-				{% endif %}
-				
-			</div>
-				<div class="progress">
-				  <div id="progressBar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-				    0%
-				  </div>
-				</div>
-		{% endif %}
-			<div class="form-group">
-				{{ form.description.label(class="form-control-text") }}
-				{% if form.description.errors %}
-					{{ form.description(class="form-control form-control-text is-invalid")}}
-					<div class="invalid-feedback">
-						{% for error in form.description.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.description(class="form-control form-control-text") }}
-				{% endif %}
-			</div>
+            <!-- Active Status -->
+            <div class="form-group form-check">
+              {{ form.active_status(class="form-check-input") }}
+              {{ form.active_status.label(class="form-check-label") }}
+              {% if form.active_status.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.active_status.errors %}
+                    <span>{{ error }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
 
-			<div class="form-group">
-				{{ form.active_status.label(class="form-control-checkbox") }}
+            <input type="hidden" id="media_duration" name="media_duration" value="">
 
-				{% if form.active_status.errors %}
-					{{ form.active_status(class="form-control checkbox-inline is-invalid")}}
-					<div class="invalid-feedback">
-						{% for error in form.active_status.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.active_status(class="checkbox-inline") }}
-				{% endif %}
-				
-			</div>
-			
-			<input type="hidden" id="media_duration" name="media_duration" value="">
-
-			<div class="form-group">
-				{{ form.submit(class="btn btn-outline-info") }}
-				<a class="btn btn-outline-secondary" href="{{ url_for('media')}}" role="button">Cancel</a>	
-			</div>
-
-			</fieldset>
-		</form>
-					
+            <!-- Submit -->
+            <div class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+              {{ form.submit(class="btn btn-info flex-fill") }}
+              <a class="btn btn-secondary flex-fill" href="{{ url_for('media')}}">Cancel</a>
+            </div>
 
 
-	</div>
+
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-	
 
 <script type="text/javascript">
   var vid = document.createElement('video');
-	document.querySelector('#media_file').addEventListener('change', function() {
-  // create url to use as the src of the video
-  var fileURL = URL.createObjectURL(this.files[0]);
-  vid.src = fileURL;
-  // wait for duration to change from NaN to the actual duration
-  vid.ondurationchange = function() {
-  	document.getElementById("media_duration").value = this.duration;
-  };
-});
-
-  
+  document.querySelector('#media_file')?.addEventListener('change', function() {
+    var fileURL = URL.createObjectURL(this.files[0]);
+    vid.src = fileURL;
+    vid.ondurationchange = function() {
+      document.getElementById("media_duration").value = this.duration;
+    };
+  });
 </script>
-
 {% endblock content %}

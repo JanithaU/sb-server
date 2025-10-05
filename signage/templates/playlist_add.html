@@ -1,81 +1,86 @@
 {% extends "layout.html" %}
 {% block content %}
-<h2>Playlist<a class="btn btn-info btn-sm float-right" href="{{ url_for('playlist')}}" role="button">Go Back</a></h2>
+
+<div class="container mt-3">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h2 class="mb-3 mb-md-0">Playlist</h2>
+    <a class="btn btn-info btn-sm" href="{{ url_for('playlist')}}" >Go Back</a>
+</div>
 <hr>
-<div class="col-md-6">
-	<div class ="content-section">
-		<form method="POST" action="">
-			{{ form.hidden_tag() }}
-			<fieldset class="form-group">
-			<legend class="border-bottom mb-4">{{legend}}</legend>
-
-<!-- To change to branch relation -->
-			<div class="form-group">
-				{{ form.playlist_name.label(class="form-control-label") }}
-
-				{% if form.playlist_name.errors %}
-					{{ form.playlist_name(class="form-control form-control-lg is-invalid")}}
-					<div class="invalid-feedback">
-						{% for error in form.playlist_name.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.playlist_name(class="form-control form-control-lg") }}
-				{% endif %}
-				
-			</div>
-
-			<div class="form-group">
-				{{ form.playlist_type.label(class="form-control-label") }}
-
-				
-				<input class="form-control form-control-lg" id="playlist_type" name="playlist_type" type="text" value="FullAd" disabled>				
-				
-			</div>
-
-			<div class="form-group">
-				{{ form.description.label(class="form-control-text") }}
-				{% if form.description.errors %}
-					{{ form.description(class="form-control form-control-text is-invalid")}}
-					<div class="invalid-feedback">
-						{% for error in form.description.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.description(class="form-control form-control-text") }}
-				{% endif %}
-			</div>
-
-			<div class="form-group">
-				{{ form.active_status.label(class="form-control-checkbox") }}
-
-				{% if form.active_status.errors %}
-					{{ form.active_status(class="form-control checkbox-inline is-invalid")}}
-					<div class="invalid-feedback">
-						{% for error in form.active_status.errors %}
-							<span>{{ error }}</span>
-						{% endfor %}
-					</div>
-				{% else %}
-					{{ form.active_status(class="checkbox-inline") }}
-				{% endif %}
-				
-			</div>
-		
-
-			<div class="form-group">
-				{{ form.submit(class="btn btn-outline-info") }}
-				<a class="btn btn-outline-secondary" href="{{ url_for('playlist')}}" role="button">Cancel</a>	
-			</div>
-
-			</fieldset>
-		</form>
-					
 
 
-	</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-6"> <!-- Full width on mobile, 6 columns on md+ -->
+    <div class="content-section">
+      <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">{{legend}}</legend>
+
+          <!-- Playlist Name -->
+          <div class="form-group">
+            {{ form.playlist_name.label(class="form-control-label") }}
+            {% if form.playlist_name.errors %}
+              {{ form.playlist_name(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.playlist_name.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.playlist_name(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+
+          <!-- Playlist Type (Disabled) -->
+          <div class="form-group">
+            {{ form.playlist_type.label(class="form-control-label") }}
+            <input class="form-control form-control-lg" id="playlist_type" name="playlist_type" type="text" value="FullAd" disabled>      
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            {{ form.description.label(class="form-control-text") }}
+            {% if form.description.errors %}
+              {{ form.description(class="form-control form-control-text is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.description.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.description(class="form-control form-control-text") }}
+            {% endif %}
+          </div>
+
+          <!-- Active Status -->
+          <div class="form-group form-check">
+            {{ form.active_status(class="form-check-input") }}
+            {{ form.active_status.label(class="form-check-label") }}
+            {% if form.active_status.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.active_status.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="d-flex flex-column flex-sm-row" style="gap: 4px;">
+            {{ form.submit(class="btn btn-info flex-fill") }}
+            <a class="btn btn-secondary flex-fill" href="{{ url_for('playlist')}}" role="button">Cancel</a>  
+          </div>
+
+
+
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
 </div>
 
+</div>
 {% endblock content %}
