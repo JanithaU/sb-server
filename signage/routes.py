@@ -1676,6 +1676,8 @@ def adhocschedule_add():
     playlist_group = Playlist.query.filter_by(active_status=True).filter(Playlist.total_size != '0.0')
     node = Node.query.all()
     form = AddAddhocForm()
+
+
     if form.validate_on_submit():
         st_date = form.start_date.data
         ed_date = form.end_date.data
@@ -1685,9 +1687,35 @@ def adhocschedule_add():
 
         st_time = form.start_time.data
         ed_time = form.end_time.data
-        if(datetime.datetime.strptime(st_time, '%H:%M:%S') > datetime.datetime.strptime(ed_time, '%H:%M:%S')):
+        if(datetime.datetime.strptime(st_time, '%H:%M') > datetime.datetime.strptime(ed_time, '%H:%M')):
             flash(f'Invalid Start Time and End Time !','danger')
             return redirect(url_for('adhocschedule_add')) 
+
+        node_ids = request.form.getlist('nodes')  # ?? returns a list of strings
+        if not node_ids:
+            flash('Please select at least one node!', 'danger')
+            return redirect(url_for('adhocschedule_add'))
+        
+        
+        # ?? Check for overlapping schedules
+        overlapping = (
+            db.session.query(PlaylistAddhoc)
+            .join(PlaylistAddhoc.nodes)
+            .filter(
+                Node.id.in_(node_ids),
+                PlaylistAddhoc.end_date >= st_date,
+                PlaylistAddhoc.start_date <= ed_date,
+                PlaylistAddhoc.start_time < ed_time,
+                PlaylistAddhoc.end_time > st_time
+            )
+            .all()
+        )
+
+        if overlapping:
+            conflict_names = ", ".join(set([n.addhoc_name for n in overlapping]))
+            flash(f'Conflict detected! Overlapping schedule(s): {conflict_names}', 'danger')
+            return redirect(url_for('adhocschedule_add'))
+
 
         adhoc_sh = PlaylistAddhoc(
                     addhoc_name=form.addhoc_name.data, 
@@ -1698,6 +1726,8 @@ def adhocschedule_add():
                     end_time=form.end_time.data,                    
                     description = form.description.data
                     )
+        selected_nodes = Node.query.filter(Node.id.in_(node_ids)).all()
+        adhoc_sh.nodes.extend(selected_nodes)
         db.session.add(adhoc_sh)
         db.session.commit()
 
@@ -1905,6 +1935,7 @@ def nodeGetSchedules(date,node):
     
                         schedule_adhoc_playlist.append({"End":ad_sc.end_time,"PlayItems":schedule_adhoc,"Start":ad_sc.start_time})
     except:
+        print("error add hoc")
         pass
     list = [{"Default":[],"Panel":0,"Schedule":[]},{"Default":[],"Panel":1,"Schedule":[]},{"Default":[],"Panel":2,"Schedule":[]}]    
     list[2]["Default"] = schedule_default # For pannel 2 FULL ADD

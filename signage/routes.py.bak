@@ -533,7 +533,8 @@ def branchGroupView(branchgroup_id):
 @login_required
 def updateBranchGroup(branchgroup_id):
     branch_group = branchGroup.query.get_or_404(branchgroup_id)
-    if not current_user.manage_configuration == 1:
+    # if not current_user.manage_configuration == 1:
+    if not has_permission('manage_configuration'):    
         abort(403)
     #branch_group.branch_group_name != 
 
@@ -569,7 +570,8 @@ def updateBranchGroup(branchgroup_id):
 @login_required
 def deleteBranchGroup(branchgroup_id):
     branch_group = branchGroup.query.get_or_404(branchgroup_id)
-    if not current_user.manage_configuration == 1:
+    # if not current_user.manage_configuration == 1:
+    if not has_permission('manage_configuration'):
         abort(403)
 
     db.session.delete(branch_group)
@@ -632,7 +634,8 @@ def branchView(branch_id):
 def updateBranch(branch_id):
     branch_group = branchGroup.query.filter_by(active_status=True)
     branch = Branch.query.get_or_404(branch_id)
-    if not current_user.manage_configuration == 1:
+    # if not current_user.manage_configuration == 1:
+    if not has_permission('manage_configuration'):
         abort(403)
     #branch_group.branch_group_name != 
 

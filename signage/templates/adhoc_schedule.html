@@ -35,7 +35,7 @@
                         {% for node in bran.nodes %}
                           {% if node.active_status %}
                           <li>
-                            <input type="checkbox" id="node_{{ node.id }}" name="node_{{ node.node_name }}" value="{{ node.id }}">
+                            <input type="checkbox" id="node_{{ node.id }}" name="nodes" value="{{ node.id }}">
                             <label for="node_{{ node.id }}" class="custom-unchecked">
                               {{ node.node_name }}
                             </label>
@@ -126,11 +126,11 @@
 
               <div class="col-6 mb-3">
                 {{ form.start_time.label(class="form-label") }}
-                {{ form.start_time(class="form-control", type="time", step="2") }}
+                {{ form.start_time(class="form-control", type="time", step="60") }}
               </div>
               <div class="col-6 mb-3">
                 {{ form.end_time.label(class="form-label") }}
-                {{ form.end_time(class="form-control", type="time", step="2") }}
+                {{ form.end_time(class="form-control", type="time", step="60") }}
               </div>
             </div>
 
