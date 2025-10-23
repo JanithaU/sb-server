@@ -1685,9 +1685,9 @@ def adhocschedule_add():
             flash(f'Invalid Start Date and End Date !','danger')
             return redirect(url_for('adhocschedule_add')) 
 
-        st_time = form.start_time.data
-        ed_time = form.end_time.data
-        if(datetime.datetime.strptime(st_time, '%H:%M') > datetime.datetime.strptime(ed_time, '%H:%M')):
+        st_time = form.start_time.data + ":00"
+        ed_time = form.end_time.data + ":00"
+        if(datetime.datetime.strptime(st_time, '%H:%M:%S') > datetime.datetime.strptime(ed_time, '%H:%M:%S')):
             flash(f'Invalid Start Time and End Time !','danger')
             return redirect(url_for('adhocschedule_add')) 
 
