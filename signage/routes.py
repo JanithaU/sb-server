@@ -1722,8 +1722,8 @@ def adhocschedule_add():
                     playlist_id=form.playlist_id.data, 
                     start_date=form.start_date.data,
                     end_date=form.end_date.data,
-                    start_time=form.start_time.data,  
-                    end_time=form.end_time.data,                    
+                    start_time=st_time,#form.start_time.data,  
+                    end_time=ed_time,#form.end_time.data,                    
                     description = form.description.data
                     )
         selected_nodes = Node.query.filter(Node.id.in_(node_ids)).all()
